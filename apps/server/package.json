@@ -1,0 +1,44 @@
+{
+  "name": "@shuttle-claw/server",
+  "version": "0.0.0",
+  "author": "Mingbing-get <1508850533@qq.com>",
+  "license": "MIT",
+  "description": "Shuttle Claw 服务端",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch ./src/index.ts",
+    "start": "node ./dist/index.js",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "@koa/cors": "^5.0.0",
+    "@koa/router": "^14.0.0",
+    "dotenv": "^17.2.3",
+    "koa": "^3.1.1",
+    "koa-body": "^7.0.0",
+    "koa-mount": "^4.2.0",
+    "string-random": "^1.0.0",
+    "@shuttle-ai/skill": "^0.0.12",
+    "@shuttle-ai/mcp-client": "^0.0.12",
+    "@shuttle-ai/agent": "^0.0.12",
+    "@shuttle-ai/type": "^0.0.12",
+    "langchain": "^1.2.17",
+    "@langchain/core": "^1.1.19",
+    "@langchain/openai": "^1.2.4",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.11.0",
+    "@types/koa": "^3.0.1",
+    "@types/koa__cors": "^5.0.1",
+    "@types/koa__router": "^12.0.5",
+    "@types/koa-router": "^7.4.9",
+    "@types/koa-mount": "^4.0.5"
+  }
+}
