@@ -1,14 +1,14 @@
 import dotenv from 'dotenv'
 import { Knex } from 'knex'
 
-import db from '../db'
+import db from '../config/db'
 import {
   MODEL_TABLE_NAME,
   AGENT_TABLE_NAME,
   SKILL_TABLE_NAME,
   MCP_TABLE_NAME,
   MESSAGE_TABLE_NAME,
-} from '../consts'
+} from '../config/consts'
 
 dotenv.config()
 
@@ -42,6 +42,7 @@ async function initAgentTable() {
       modelId: (table) => table.string('modelId').notNullable(),
       name: (table) => table.string('name', 20).unique().notNullable(),
       describe: (table) => table.string('describe').notNullable(),
+      parentId: (table) => table.string('parentId'),
       isMain: (table) => table.boolean('isMain').notNullable().defaultTo(false),
       isLazy: (table) => table.boolean('isLazy').notNullable().defaultTo(false),
       enabled: (table) =>

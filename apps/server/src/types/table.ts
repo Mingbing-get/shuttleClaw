@@ -3,6 +3,7 @@ export namespace Table {
     id: string
     modelId: string
     name: string
+    parentId?: string
     describe: string
     isMain: boolean
     isLazy: boolean

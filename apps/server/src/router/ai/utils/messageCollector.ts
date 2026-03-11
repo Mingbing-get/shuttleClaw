@@ -1,7 +1,7 @@
 import { ShuttleAi } from '@shuttle-ai/type'
 
-import db from '../../../db'
-import { MESSAGE_TABLE_NAME } from '../../../consts'
+import db from '../../../config/db'
+import { MESSAGE_TABLE_NAME } from '../../../config/consts'
 import { Table } from '../../../types'
 
 export default class MessageCollector

@@ -5,7 +5,7 @@ import { AgentCluster } from '@shuttle-ai/agent'
 import { SkillLoader } from '@shuttle-ai/skill'
 
 import { decrypt } from '../../../utils/secret'
-import db from '../../../db'
+import db from '../../../config/db'
 import {
   MODEL_TABLE_NAME,
   AGENT_TABLE_NAME,
@@ -13,7 +13,7 @@ import {
   MCP_TABLE_NAME,
   AGENT_DIR,
   SKILL_DIR,
-} from '../../../consts'
+} from '../../../config/consts'
 import { Table } from '../../../types'
 
 export default async function loadAgent(
@@ -44,6 +44,11 @@ export default async function loadAgent(
   if (!agentModel) {
     throw new Error(`Agent ${name} model not found`)
   }
+
+  const subAgents = await db<Table.Agent>(AGENT_TABLE_NAME)
+    .where('parentId', '=', agent.id)
+    .andWhere('enabled', '=', true)
+    .select('id', 'name', 'describe', 'isLazy')
 
   const skills = await db<Table.Skill>(SKILL_TABLE_NAME)
     .where('agentId', '=', agent.id)
@@ -79,6 +84,18 @@ export default async function loadAgent(
   return {
     model,
     mcps: mpcs.map((mcp) => mcp.config as ShuttleAi.MCP.ServerConfig),
+    subAgents: subAgents
+      .filter((subAgent) => !subAgent.isLazy)
+      .map((subAgent) => ({
+        name: subAgent.name,
+        description: subAgent.describe,
+      })),
+    lazyAgents: subAgents
+      .filter((subAgent) => subAgent.isLazy)
+      .map((subAgent) => ({
+        name: subAgent.name,
+        description: subAgent.describe,
+      })),
     skillConfig: skillLoader
       ? {
           loader: skillLoader,
