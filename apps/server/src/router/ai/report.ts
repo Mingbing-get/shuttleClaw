@@ -2,7 +2,7 @@ import { Middleware } from '@koa/router'
 import { ShuttleAi } from '@shuttle-ai/type'
 
 import { ResponseModel } from '../../utils/responseModel'
-import resolverManager from './resolverManager'
+import resolverManager from './utils/resolverManager'
 
 const confirmTool: Middleware = (ctx) => {
   const responseModel = new ResponseModel()

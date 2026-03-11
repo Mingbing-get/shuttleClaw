@@ -2,8 +2,7 @@
 node_modules/
 .pnpm-store/
 
-apps/server/agent
-apps/server/skills
+apps/server/.agent
 
 # Build outputs
 dist/

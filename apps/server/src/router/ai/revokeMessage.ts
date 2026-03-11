@@ -1,8 +1,7 @@
-import { FileMessageCollector } from '@shuttle-ai/agent'
 import { Middleware } from '@koa/router'
-import { resolve } from 'path'
 
 import { ResponseModel } from '../../utils/responseModel'
+import MessageCollector from './utils/messageCollector'
 
 const revokeMessage: Middleware = async (ctx) => {
   const responseModel = new ResponseModel()
@@ -13,9 +12,7 @@ const revokeMessage: Middleware = async (ctx) => {
     agentId: string
   }
 
-  const messageCollector = new FileMessageCollector(
-    resolve(process.cwd(), './agent/messages'),
-  )
+  const messageCollector = new MessageCollector()
 
   const agentMessages = await messageCollector.getMessagesByAgentId(
     workId,

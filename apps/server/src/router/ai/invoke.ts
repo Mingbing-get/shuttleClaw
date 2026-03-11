@@ -1,51 +1,11 @@
 import 'dotenv/config'
-import { CreateAgentParams } from 'langchain'
-import { ChatOpenAI } from '@langchain/openai'
 import { Middleware } from '@koa/router'
 import { ShuttleAi } from '@shuttle-ai/type'
-import {
-  AgentCluster,
-  readableHook,
-  FileMessageCollector,
-} from '@shuttle-ai/agent'
-import { resolve } from 'path'
-import { existsSync } from 'fs'
+import { AgentCluster, readableHook } from '@shuttle-ai/agent'
 
-import resolverManager from './resolverManager'
-
-async function loadAgent(name: string): Promise<
-  ShuttleAi.Cluster.ToolsWithSubAgents &
-    Omit<CreateAgentParams, 'tools'> & {
-      skillConfig?: ShuttleAi.Cluster.SkillConfig
-    }
-> {
-  const model = new ChatOpenAI({
-    modelName: process.env.OPENAI_DEFAULT_MODEL,
-    apiKey: process.env.OPENAI_API_KEY,
-    configuration: {
-      baseURL: process.env.OPENAI_API_URL,
-    },
-    streaming: true,
-  })
-
-  try {
-    const configName = name.split('_').slice(0, -1).join('_')
-    const config = await import(
-      resolve(process.cwd(), `./src/agent/${configName}/extends`)
-    )
-
-    const skillDir = resolve(process.cwd(), `./src/agent/${configName}/skills`)
-    return {
-      ...config.default,
-      model,
-      skillConfig: existsSync(skillDir) ? { dir: skillDir } : undefined,
-    }
-  } catch (error) {
-    return {
-      model,
-    }
-  }
-}
+import resolverManager from './utils/resolverManager'
+import MessageCollector from './utils/messageCollector'
+import loadAgent from './utils/loadAgent'
 
 const invoke: Middleware = async (ctx) => {
   const { workId, prompt, autoRunScope } = ctx.request.body as {
@@ -67,9 +27,7 @@ const invoke: Middleware = async (ctx) => {
     id: workId,
     hooks: hooks,
     autoRunScope,
-    messageCollector: new FileMessageCollector(
-      resolve(process.cwd(), './agent/messages'),
-    ),
+    messageCollector: new MessageCollector(),
   })
 
   resolverManager.addAgentResolver(agentCluster.id, {

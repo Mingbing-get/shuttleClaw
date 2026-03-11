@@ -8,3 +8,6 @@ export const AGENT_TABLE_NAME = `${DB_TABLE_PREFIX}agent`
 export const SKILL_TABLE_NAME = `${DB_TABLE_PREFIX}skill`
 export const MCP_TABLE_NAME = `${DB_TABLE_PREFIX}mcp`
 export const MESSAGE_TABLE_NAME = `${DB_TABLE_PREFIX}message`
+
+export const AGENT_DIR = '.agents'
+export const SKILL_DIR = 'skills'

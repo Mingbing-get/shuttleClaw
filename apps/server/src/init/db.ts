@@ -40,10 +40,12 @@ async function initAgentTable() {
     fieldMap: {
       id: (table) => table.string('id').primary(),
       modelId: (table) => table.string('modelId').notNullable(),
-      name: (table) => table.string('name', 20).notNullable(),
+      name: (table) => table.string('name', 20).unique().notNullable(),
       describe: (table) => table.string('describe').notNullable(),
       isMain: (table) => table.boolean('isMain').notNullable().defaultTo(false),
       isLazy: (table) => table.boolean('isLazy').notNullable().defaultTo(false),
+      enabled: (table) =>
+        table.boolean('enabled').notNullable().defaultTo(true),
       createdAt: (table) => table.dateTime('createdAt').notNullable(),
       updatedAt: (table) => table.dateTime('updatedAt').notNullable(),
     },

@@ -6,6 +6,7 @@ export namespace Table {
     describe: string
     isMain: boolean
     isLazy: boolean
+    enabled: boolean
     createdAt: string
     updatedAt: string
   }
