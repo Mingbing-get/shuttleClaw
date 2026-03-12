@@ -5,12 +5,13 @@ import { AgentCluster, readableHook } from '@shuttle-ai/agent'
 
 import resolverManager from './utils/resolverManager'
 import MessageCollector from './utils/messageCollector'
-import loadAgent from './utils/loadAgent'
+import createLoadAgent from './utils/loadAgent'
 
 const invoke: Middleware = async (ctx) => {
-  const { workId, prompt, autoRunScope } = ctx.request.body as {
+  const { workId, prompt, mainAgentId, autoRunScope } = ctx.request.body as {
     workId: string
     prompt: string
+    mainAgentId?: string
     autoRunScope?: ShuttleAi.Cluster.AutoRunScope
   }
 
@@ -21,7 +22,7 @@ const invoke: Middleware = async (ctx) => {
   ctx.status = 200
 
   const { stream, hooks, send, close, resolveConfirmTool, resolveAgentStart } =
-    readableHook(loadAgent)
+    readableHook(createLoadAgent(mainAgentId))
 
   const agentCluster = new AgentCluster({
     id: workId,

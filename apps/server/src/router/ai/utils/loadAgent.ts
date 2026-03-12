@@ -16,90 +16,98 @@ import {
 } from '../../../config/consts'
 import { Table } from '../../../types'
 
-export default async function loadAgent(
-  name: string,
-): Promise<ShuttleAi.Cluster.AgentStartReturn> {
-  const agentName = name.split('_').slice(0, -1).join('_')
+export default function createLoadAgent(mainAgentId?: string) {
+  async function loadAgent(
+    name: string,
+  ): Promise<ShuttleAi.Cluster.AgentStartReturn> {
+    const agentName = name.split('_').slice(0, -1).join('_')
 
-  const agentHandle = db<Table.Agent>(AGENT_TABLE_NAME)
-  if (name === AgentCluster.MAIN_AGENT_NAME) {
-    agentHandle.where('parentId', '=', null)
-  } else {
-    agentHandle.where('name', '=', agentName)
-  }
+    const agentHandle = db<Table.Agent>(AGENT_TABLE_NAME)
+    if (name === AgentCluster.MAIN_AGENT_NAME) {
+      if (mainAgentId) {
+        agentHandle.where('id', '=', mainAgentId)
+      } else {
+        agentHandle.where('parentId', '=', null)
+      }
+    } else {
+      agentHandle.where('name', '=', agentName)
+    }
 
-  const agent = await agentHandle.first('id', 'modelId', 'enabled')
-  if (!agent) {
-    throw new Error(`Agent ${name} not found`)
-  }
+    const agent = await agentHandle.first('id', 'modelId', 'enabled')
+    if (!agent) {
+      throw new Error(`Agent ${name} not found`)
+    }
 
-  if (!agent.enabled) {
-    throw new Error(`Agent ${name} is disabled`)
-  }
+    if (!agent.enabled) {
+      throw new Error(`Agent ${name} is disabled`)
+    }
 
-  const agentModel = await db<Table.Model>(MODEL_TABLE_NAME)
-    .where('id', '=', agent.modelId)
-    .first('apiKey', 'model', 'url')
+    const agentModel = await db<Table.Model>(MODEL_TABLE_NAME)
+      .where('id', '=', agent.modelId)
+      .first('apiKey', 'model', 'url')
 
-  if (!agentModel) {
-    throw new Error(`Agent ${name} model not found`)
-  }
+    if (!agentModel) {
+      throw new Error(`Agent ${name} model not found`)
+    }
 
-  const subAgents = await db<Table.Agent>(AGENT_TABLE_NAME)
-    .where('parentId', '=', agent.id)
-    .andWhere('enabled', '=', true)
-    .select('id', 'name', 'describe', 'isLazy')
+    const subAgents = await db<Table.Agent>(AGENT_TABLE_NAME)
+      .where('parentId', '=', agent.id)
+      .andWhere('enabled', '=', true)
+      .select('id', 'name', 'describe', 'isLazy')
 
-  const skills = await db<Table.Skill>(SKILL_TABLE_NAME)
-    .where('agentId', '=', agent.id)
-    .andWhere('enabled', '=', true)
-    .select('skillName', 'env')
+    const skills = await db<Table.Skill>(SKILL_TABLE_NAME)
+      .where('agentId', '=', agent.id)
+      .andWhere('enabled', '=', true)
+      .select('skillName', 'env')
 
-  const mpcs = await db<Table.MCP>(MCP_TABLE_NAME)
-    .where('agentId', '=', agent.id)
-    .andWhere('enabled', '=', true)
-    .select('config')
+    const mpcs = await db<Table.MCP>(MCP_TABLE_NAME)
+      .where('agentId', '=', agent.id)
+      .andWhere('enabled', '=', true)
+      .select('config')
 
-  let skillLoader: SkillLoader | undefined
-  if (skills.length > 0) {
-    skillLoader = new SkillLoader({
-      dir: resolve(process.cwd(), AGENT_DIR, agentName, SKILL_DIR),
-      pickSkillNames: skills.map((skill) => skill.skillName),
-      async getEnv(skillName) {
-        const skill = skills.find((s) => s.skillName === skillName)
-        return skill?.env || {}
+    let skillLoader: SkillLoader | undefined
+    if (skills.length > 0) {
+      skillLoader = new SkillLoader({
+        dir: resolve(process.cwd(), AGENT_DIR, agentName, SKILL_DIR),
+        pickSkillNames: skills.map((skill) => skill.skillName),
+        async getEnv(skillName) {
+          const skill = skills.find((s) => s.skillName === skillName)
+          return skill?.env || {}
+        },
+      })
+    }
+
+    const model = new ChatOpenAI({
+      modelName: agentModel.model,
+      apiKey: decrypt(agentModel.apiKey),
+      configuration: {
+        baseURL: agentModel.url,
       },
+      streaming: true,
     })
+
+    return {
+      model,
+      mcps: mpcs.map((mcp) => mcp.config as ShuttleAi.MCP.ServerConfig),
+      subAgents: subAgents
+        .filter((subAgent) => !subAgent.isLazy)
+        .map((subAgent) => ({
+          name: subAgent.name,
+          description: subAgent.describe,
+        })),
+      lazyAgents: subAgents
+        .filter((subAgent) => subAgent.isLazy)
+        .map((subAgent) => ({
+          name: subAgent.name,
+          description: subAgent.describe,
+        })),
+      skillConfig: skillLoader
+        ? {
+            loader: skillLoader,
+          }
+        : undefined,
+    }
   }
 
-  const model = new ChatOpenAI({
-    modelName: agentModel.model,
-    apiKey: decrypt(agentModel.apiKey),
-    configuration: {
-      baseURL: agentModel.url,
-    },
-    streaming: true,
-  })
-
-  return {
-    model,
-    mcps: mpcs.map((mcp) => mcp.config as ShuttleAi.MCP.ServerConfig),
-    subAgents: subAgents
-      .filter((subAgent) => !subAgent.isLazy)
-      .map((subAgent) => ({
-        name: subAgent.name,
-        description: subAgent.describe,
-      })),
-    lazyAgents: subAgents
-      .filter((subAgent) => subAgent.isLazy)
-      .map((subAgent) => ({
-        name: subAgent.name,
-        description: subAgent.describe,
-      })),
-    skillConfig: skillLoader
-      ? {
-          loader: skillLoader,
-        }
-      : undefined,
-  }
+  return loadAgent
 }
