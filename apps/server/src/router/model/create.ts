@@ -5,6 +5,7 @@ import { Table } from '../../types'
 import snowFlake from '../../config/snowFlake'
 import db from '../../config/db'
 import { MODEL_TABLE_NAME } from '../../config/consts'
+import { encrypt } from '../../utils/secret'
 
 const createModel: Middleware = async (ctx) => {
   const resModel = new ResponseModel()
@@ -14,6 +15,7 @@ const createModel: Middleware = async (ctx) => {
 
   const record = {
     ...data,
+    apiKey: encrypt(data.apiKey),
     id: snowFlake.next(),
     createdAt: new Date() as any,
     updatedAt: new Date() as any,
@@ -21,7 +23,8 @@ const createModel: Middleware = async (ctx) => {
 
   await db<Table.Model>(MODEL_TABLE_NAME).insert(record)
 
-  resModel.setData(record)
+  const { apiKey, ...model } = record
+  resModel.setData(model)
 }
 
 export default createModel

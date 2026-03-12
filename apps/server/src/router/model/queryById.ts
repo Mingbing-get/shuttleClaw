@@ -11,7 +11,10 @@ const queryModelById: Middleware = async (ctx) => {
 
   const { id } = ctx.params
 
-  const record = await db<Table.Model>(MODEL_TABLE_NAME).where({ id }).first()
+  const record = await db<Table.Model>(MODEL_TABLE_NAME)
+    .where({ id })
+    .first()
+    .select('createdAt', 'updatedAt', 'model', 'url', 'id')
 
   if (!record) {
     resModel.setError(ResponseModel.CODE.NOT_FOUND, 'Model not found')

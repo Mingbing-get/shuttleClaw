@@ -1,5 +1,6 @@
 import { Middleware } from '@koa/router'
 
+import { encrypt } from '../../utils/secret'
 import { ResponseModel } from '../../utils/responseModel'
 import { Table } from '../../types'
 import db from '../../config/db'
@@ -17,6 +18,9 @@ const updateModel: Middleware = async (ctx) => {
     id,
     updatedAt: new Date() as any,
   }
+  if (updateData.apiKey) {
+    updateData.apiKey = encrypt(updateData.apiKey)
+  }
 
   const result = await db<Table.Model>(MODEL_TABLE_NAME)
     .where({ id })
@@ -27,7 +31,10 @@ const updateModel: Middleware = async (ctx) => {
     return
   }
 
-  const record = await db<Table.Model>(MODEL_TABLE_NAME).where({ id }).first()
+  const record = await db<Table.Model>(MODEL_TABLE_NAME)
+    .where({ id })
+    .first()
+    .select('createdAt', 'updatedAt', 'model', 'url', 'id')
   resModel.setData(record)
 }
 

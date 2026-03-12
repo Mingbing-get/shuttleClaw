@@ -45,6 +45,7 @@ const queryModel: Middleware = async (ctx) => {
     .orderBy(sortBy, sortOrder)
     .limit(Number(pageSize))
     .offset(offset)
+    .select('createdAt', 'updatedAt', 'model', 'url', 'id')
 
   resModel.setData({
     list: records,
