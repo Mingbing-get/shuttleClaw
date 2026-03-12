@@ -17,6 +17,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "antd": "^6.1.1",
+    "@ant-design/icons": "^6.1.0",
     "@shuttle-ai/render-react": "^0.0.12",
     "@shuttle-ai/client": "^0.0.12",
     "@shuttle-ai/type": "^0.0.12"

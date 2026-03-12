@@ -4,7 +4,6 @@
   "author": "Mingbing-get <1508850533@qq.com>",
   "license": "MIT",
   "description": "Shuttle Claw 服务端",
-  "type": "module",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
     "start": "node ./dist/index.js",

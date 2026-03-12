@@ -1,4 +1,5 @@
 import { API_BASE_URL } from './config'
+import { TOKEN_KEY } from '../config/const'
 
 interface ApiResponse<T = any> {
   code: number
@@ -13,7 +14,7 @@ interface RequestOptions {
 }
 
 const getToken = (): string | null => {
-  return localStorage.getItem('token')
+  return localStorage.getItem(TOKEN_KEY)
 }
 
 const request = async <T = any>(

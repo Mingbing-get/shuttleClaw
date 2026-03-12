@@ -1,4 +1,5 @@
 import { API_BASE_URL } from './config'
+import { TOKEN_KEY } from '../config/const'
 
 export const authApi = {
   check: async (apiKey: string) => {
@@ -15,7 +16,7 @@ export const authApi = {
     const token = response.headers.get('x-user')
 
     if (result.code === 200 && token) {
-      localStorage.setItem('token', token)
+      localStorage.setItem(TOKEN_KEY, token)
     }
 
     return result
