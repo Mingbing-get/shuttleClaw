@@ -1,4 +1,16 @@
 export namespace Table {
+  export type CreateRecord<T extends Record<string, any>> = Omit<
+    T,
+    'id' | 'createdAt' | 'updatedAt'
+  >
+
+  export type UpdateRecord<T extends Record<string, any>> = Omit<
+    Partial<T>,
+    'id' | 'createdAt' | 'updatedAt'
+  > & {
+    id: string
+  }
+
   export interface Agent {
     id: string
     modelId: string
