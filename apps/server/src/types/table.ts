@@ -17,7 +17,6 @@ export namespace Table {
     name: string
     parentId?: string
     describe: string
-    isMain: boolean
     isLazy: boolean
     enabled: boolean
     createdAt: string
@@ -55,6 +54,7 @@ export namespace Table {
     id: string
     agentId: string
     skillName: string
+    envDefine?: Record<string, any> | null
     env?: Record<string, any> | null
     enabled: boolean
     createdAt: string

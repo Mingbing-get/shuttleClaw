@@ -43,7 +43,6 @@ async function initAgentTable() {
       name: (table) => table.string('name', 20).unique().notNullable(),
       describe: (table) => table.string('describe').notNullable(),
       parentId: (table) => table.string('parentId'),
-      isMain: (table) => table.boolean('isMain').notNullable().defaultTo(false),
       isLazy: (table) => table.boolean('isLazy').notNullable().defaultTo(false),
       enabled: (table) =>
         table.boolean('enabled').notNullable().defaultTo(true),
@@ -60,6 +59,7 @@ async function initSkillTable() {
       id: (table) => table.string('id').primary(),
       agentId: (table) => table.string('agentId').notNullable(),
       skillName: (table) => table.string('skillName').notNullable(),
+      envDefine: (table) => table.json('envDefine'),
       env: (table) => table.json('env'),
       enabled: (table) =>
         table.boolean('enabled').notNullable().defaultTo(true),

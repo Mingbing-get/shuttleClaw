@@ -9,6 +9,10 @@ import { createReadStream } from 'fs'
 import errorHandle from './middleware/errorHandle'
 import aiRouter from './router/ai'
 import authRouter from './router/auth'
+import modelRouter from './router/model'
+import agentRouter from './router/agent'
+import skillRouter from './router/skill'
+import mcpRouter from './router/mcp'
 
 import init from './init'
 
@@ -48,6 +52,10 @@ async function main() {
   )
   app.use(mount('/auth', authRouter.routes()))
   app.use(mount('/ai', aiRouter.routes()))
+  app.use(mount('/model', modelRouter.routes()))
+  app.use(mount('/agent', agentRouter.routes()))
+  app.use(mount('/skill', skillRouter.routes()))
+  app.use(mount('/mcp', mcpRouter.routes()))
 
   // 返回public/index.html
   app.use(async (ctx) => {

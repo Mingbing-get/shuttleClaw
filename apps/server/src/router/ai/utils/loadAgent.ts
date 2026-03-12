@@ -23,7 +23,7 @@ export default async function loadAgent(
 
   const agentHandle = db<Table.Agent>(AGENT_TABLE_NAME)
   if (name === AgentCluster.MAIN_AGENT_NAME) {
-    agentHandle.where('isMain', '=', true)
+    agentHandle.where('parentId', '=', null)
   } else {
     agentHandle.where('name', '=', agentName)
   }
