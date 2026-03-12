@@ -64,6 +64,7 @@ const installSkill: Middleware = async (ctx) => {
         id: snowFlake.next(),
         agentId: data.agentId,
         skillName,
+        describe: skill.metadata?.description || '',
         envDefine: skill.metadata?.env,
         enabled: data.enabled,
         createdAt: new Date() as any,

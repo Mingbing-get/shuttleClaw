@@ -54,6 +54,7 @@ export namespace Table {
     id: string
     agentId: string
     skillName: string
+    describe: string
     envDefine?: Record<string, any> | null
     env?: Record<string, any> | null
     enabled: boolean

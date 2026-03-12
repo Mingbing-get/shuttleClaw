@@ -1,25 +1,9 @@
-import { HttpTransporter } from '@shuttle-ai/client'
 import { AgentWorkProvider, AgentWorkRender } from '@shuttle-ai/render-react'
-
-const transporter = new HttpTransporter({
-  baseUrl: 'http://localhost:3101/ai',
-  requestHeaders: {
-    'content-type': 'application/json',
-  },
-  revokeMessage: {
-    afterSend: async (response) => {
-      response.data = response.data.data
-    },
-  },
-})
+import transporter from './config/transporter'
 
 export default function Main() {
   return (
-    <AgentWorkProvider
-      transporter={transporter}
-      // initAgent={initAgent}
-      context={{}}
-    >
+    <AgentWorkProvider transporter={transporter} context={{}}>
       <AgentWorkRender
         style={{
           boxSizing: 'border-box',

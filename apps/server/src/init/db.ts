@@ -59,6 +59,7 @@ async function initSkillTable() {
       id: (table) => table.string('id').primary(),
       agentId: (table) => table.string('agentId').notNullable(),
       skillName: (table) => table.string('skillName').notNullable(),
+      describe: (table) => table.text('describe'),
       envDefine: (table) => table.json('envDefine'),
       env: (table) => table.json('env'),
       enabled: (table) =>
