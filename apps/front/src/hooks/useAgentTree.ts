@@ -22,7 +22,7 @@ const allAgentCache = new RefreshCache(async () => {
 
 export default function useAgentTree(): [AgentTree[], boolean, () => void] {
   const [agentTree, setAgentTree] = useState<AgentTree[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     allAgentCache.use(async (cache) => {

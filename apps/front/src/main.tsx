@@ -16,7 +16,7 @@ import AgentConfig from './components/agentConfig'
 
 export default function Main() {
   const [collapsed, setCollapsed] = useState(false)
-  const [selectedKeys, setSelectedKeys] = useState(['agent'])
+  const [selectedKeys, setSelectedKeys] = useState(['chat'])
 
   const menuItems: MenuProps['items'] = useMemo(
     () => [

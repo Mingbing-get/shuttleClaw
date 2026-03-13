@@ -1,6 +1,6 @@
 import { HttpTransporter } from '@shuttle-ai/client'
 
-import { TOKEN_KEY } from './const'
+import { TOKEN_KEY, AGENT_ID_KEY } from './const'
 import { API_BASE_URL } from '../apis/config'
 
 const transporter = new HttpTransporter({
@@ -12,6 +12,14 @@ const transporter = new HttpTransporter({
   revokeMessage: {
     afterSend: async (response) => {
       response.data = response.data.data
+    },
+  },
+  invoke: {
+    async beforeSend(data) {
+      return {
+        ...data,
+        mainAgentId: localStorage.getItem(AGENT_ID_KEY),
+      }
     },
   },
 })

@@ -11,7 +11,6 @@ import {
   SKILL_TABLE_NAME,
   MCP_TABLE_NAME,
   AGENT_DIR,
-  SKILL_DIR,
 } from '../../config/consts'
 
 const deleteAgent: Middleware = async (ctx) => {
@@ -42,26 +41,11 @@ const deleteAgent: Middleware = async (ctx) => {
       .whereIn('agentId', willRemoveIds)
       .delete()
 
-    const skills = await trx<Table.Skill>(SKILL_TABLE_NAME)
-      .whereIn('agentId', willRemoveIds)
-      .select('agentId', 'skillName')
-
-    const willRemoveSkillDirs = skills.map((item) => {
-      const agent = willRemoveAgents.find((agent) => agent.id === item.agentId)
-      if (!agent) {
-        return
-      }
-
-      return resolve(
-        process.cwd(),
-        AGENT_DIR,
-        agent.name,
-        SKILL_DIR,
-        item.skillName,
-      )
+    const willRemoveAgentDirs = willRemoveAgents.map((item) => {
+      return resolve(process.cwd(), AGENT_DIR, item.name)
     })
 
-    for (const dir of willRemoveSkillDirs) {
+    for (const dir of willRemoveAgentDirs) {
       if (!dir) {
         continue
       }
