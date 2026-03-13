@@ -116,5 +116,5 @@ export interface RevokeMessageParams {
 }
 
 export interface MoveAgentParams {
-  targetParentId?: string
+  parentId?: string
 }

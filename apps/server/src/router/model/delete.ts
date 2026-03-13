@@ -3,7 +3,7 @@ import { Middleware } from '@koa/router'
 import { ResponseModel } from '../../utils/responseModel'
 import { Table } from '../../types'
 import db from '../../config/db'
-import { MODEL_TABLE_NAME } from '../../config/consts'
+import { AGENT_TABLE_NAME, MODEL_TABLE_NAME } from '../../config/consts'
 
 const deleteModel: Middleware = async (ctx) => {
   const resModel = new ResponseModel()
@@ -15,6 +15,18 @@ const deleteModel: Middleware = async (ctx) => {
 
   if (!record) {
     resModel.setError(ResponseModel.CODE.NOT_FOUND, 'Model not found')
+    return
+  }
+
+  const agent = await db<Table.Agent>(AGENT_TABLE_NAME)
+    .where({ modelId: id })
+    .first()
+
+  if (agent) {
+    resModel.setError(
+      ResponseModel.CODE.VALIDATE_ERROR,
+      'Model is used by agent',
+    )
     return
   }
 

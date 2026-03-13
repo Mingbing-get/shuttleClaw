@@ -1,0 +1,49 @@
+.agent-config {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  &__tree-node {
+    padding: 4px 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+
+    &__main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    &__header {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    &__title {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    &__describe {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    &__actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  .ant-tree-list {
+    .ant-tree-node-content-wrapper {
+      border: 1px solid #d9d9d9;
+    }
+  }
+}

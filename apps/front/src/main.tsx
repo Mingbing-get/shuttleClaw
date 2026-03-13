@@ -16,7 +16,7 @@ import AgentConfig from './components/agentConfig'
 
 export default function Main() {
   const [collapsed, setCollapsed] = useState(false)
-  const [selectedKeys, setSelectedKeys] = useState(['model'])
+  const [selectedKeys, setSelectedKeys] = useState(['agent'])
 
   const menuItems: MenuProps['items'] = useMemo(
     () => [
@@ -27,7 +27,7 @@ export default function Main() {
         children: [
           {
             key: 'chat',
-            label: '聊天',
+            label: '对话',
             icon: <MessageFilled />,
           },
         ],

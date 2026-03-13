@@ -39,12 +39,13 @@ const queryModel: Middleware = async (ctx) => {
   const total = await totalQuery.count('* as count').first()
   const totalCount = Number((total as any)?.count || 0)
 
-  const offset = (Number(page) - 1) * Number(pageSize)
+  if (Number(page) > 0) {
+    const offset = (Number(page) - 1) * Number(pageSize)
+    query = query.limit(Number(pageSize)).offset(offset)
+  }
 
   const records = await query
     .orderBy(sortBy, sortOrder)
-    .limit(Number(pageSize))
-    .offset(offset)
     .select('createdAt', 'updatedAt', 'model', 'url', 'id')
 
   resModel.setData({

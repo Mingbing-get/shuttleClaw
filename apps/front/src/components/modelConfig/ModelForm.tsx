@@ -55,6 +55,7 @@ export default function ModelForm({
       onCancel={handleCancel}
       okText="确定"
       cancelText="取消"
+      getContainer={() => document.body}
     >
       <Form form={form} layout="vertical" initialValues={initialValues}>
         <Form.Item
