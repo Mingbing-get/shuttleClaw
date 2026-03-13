@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Modal, message, Row, Col, Spin } from 'antd'
+import { Button, Modal, message, Row, Col, Spin, Empty } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { mcpApi } from '../../../apis'
@@ -138,18 +138,22 @@ export default function McpManagerModal({
           >
             添加 MCP
           </Button>
-          <Row gutter={[16, 16]}>
-            {mcps.map((mcp) => (
-              <Col key={mcp.id} xs={24} sm={12} lg={8}>
-                <McpCard
-                  mcp={mcp}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onToggleEnabled={handleToggleEnabled}
-                />
-              </Col>
-            ))}
-          </Row>
+          {mcps.length > 0 ? (
+            <Row gutter={[16, 16]}>
+              {mcps.map((mcp) => (
+                <Col key={mcp.id} xs={24} sm={12} lg={8}>
+                  <McpCard
+                    mcp={mcp}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onToggleEnabled={handleToggleEnabled}
+                  />
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <Empty description="暂无 MCP，点击左上角添加 MCP" />
+          )}
         </Spin>
       </Modal>
 

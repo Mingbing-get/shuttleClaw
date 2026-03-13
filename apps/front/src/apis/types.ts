@@ -1,3 +1,5 @@
+import { ShuttleAi } from '@shuttle-ai/type'
+
 export namespace Table {
   export interface Agent {
     id: string
@@ -53,6 +55,17 @@ export namespace Table {
     enabled: boolean
     createdAt: string
     updatedAt: string
+  }
+
+  export interface Work {
+    id: string
+    mainAgentId: string
+    prompt: string
+    autoRunScope?: ShuttleAi.Cluster.AutoRunScope
+    trigger?: 'user' | 'agent' | 'scheduled'
+    status: 'running' | 'completed' | 'failed'
+    createdAt: string
+    endedAt?: string
   }
 }
 
@@ -122,4 +135,14 @@ export interface RevokeMessageParams {
 
 export interface MoveAgentParams {
   parentId?: string
+}
+
+export interface QueryWorkParams extends Pick<
+  Table.Work,
+  'trigger' | 'status' | 'autoRunScope' | 'mainAgentId'
+> {
+  page?: number
+  pageSize?: number
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }

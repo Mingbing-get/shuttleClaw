@@ -1,5 +1,5 @@
 import { Form, Input, Modal, Select } from 'antd'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 interface McpFormProps {
   open: boolean
@@ -23,9 +23,11 @@ export default function McpForm({
   onCancel,
 }: McpFormProps) {
   const [form] = Form.useForm<{ config: string; envKeys?: string[] }>()
+  const [loading, setLoading] = useState(false)
 
   const handleOk = async () => {
     try {
+      setLoading(true)
       const values = await form.validateFields()
       const reset = await onOk(values)
       if (reset) {
@@ -33,6 +35,8 @@ export default function McpForm({
       }
     } catch (error) {
       console.error('Validation failed:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -61,6 +65,9 @@ export default function McpForm({
       onOk={handleOk}
       onCancel={onCancel}
       okText="确定"
+      okButtonProps={{
+        loading,
+      }}
       cancelText="取消"
       width={600}
     >

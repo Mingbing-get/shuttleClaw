@@ -42,4 +42,8 @@ export const API_ENDPOINTS = {
     UPDATE: (id: string) => `/skill/${id}`,
     DELETE: (id: string) => `/skill/${id}`,
   },
+  WORK: {
+    LIST: '/work',
+    NEAREST: '/work/nearOne',
+  },
 }

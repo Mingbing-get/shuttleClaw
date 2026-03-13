@@ -7,6 +7,7 @@ import {
   AGENT_TABLE_NAME,
   SKILL_TABLE_NAME,
   MCP_TABLE_NAME,
+  WORK_TABLE_NAME,
   MESSAGE_TABLE_NAME,
 } from '../config/consts'
 
@@ -17,6 +18,7 @@ export async function initDb() {
   await initAgentTable()
   await initSkillTable()
   await initMCPTable()
+  await initWorkTable()
   await initMessageTable()
 }
 
@@ -82,6 +84,22 @@ async function initMCPTable() {
         table.boolean('enabled').notNullable().defaultTo(true),
       createdAt: (table) => table.dateTime('createdAt').notNullable(),
       updatedAt: (table) => table.dateTime('updatedAt').notNullable(),
+    },
+  })
+}
+
+async function initWorkTable() {
+  await syncTable({
+    tableName: WORK_TABLE_NAME,
+    fieldMap: {
+      id: (table) => table.string('id').primary(),
+      mainAgentId: (table) => table.string('mainAgentId').notNullable(),
+      prompt: (table) => table.text('prompt').notNullable(),
+      autoRunScope: (table) => table.string('autoRunScope', 20),
+      trigger: (table) => table.string('trigger', 20), // user, agent, scheduled
+      status: (table) => table.string('status', 20).notNullable(), // running, completed, failed
+      createdAt: (table) => table.dateTime('createdAt').notNullable(),
+      endedAt: (table) => table.dateTime('endedAt'),
     },
   })
 }

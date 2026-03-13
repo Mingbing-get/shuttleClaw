@@ -1,3 +1,5 @@
+import { ShuttleAi } from '@shuttle-ai/type'
+
 export namespace Table {
   export type CreateRecord<T extends Record<string, any>> = Omit<
     T,
@@ -31,6 +33,17 @@ export namespace Table {
     enabled: boolean
     createdAt: string
     updatedAt: string
+  }
+
+  export interface Work {
+    id: string
+    mainAgentId: string
+    prompt: string
+    autoRunScope?: ShuttleAi.Cluster.AutoRunScope
+    trigger?: 'user' | 'agent' | 'scheduled'
+    status: 'running' | 'completed' | 'failed'
+    createdAt: string
+    endedAt?: string
   }
 
   export interface Message {

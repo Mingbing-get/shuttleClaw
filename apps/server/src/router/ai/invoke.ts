@@ -6,6 +6,9 @@ import { AgentCluster, readableHook } from '@shuttle-ai/agent'
 import resolverManager from './utils/resolverManager'
 import MessageCollector from './utils/messageCollector'
 import createLoadAgent from './utils/loadAgent'
+import db from '../../config/db'
+import { WORK_TABLE_NAME } from '../../config/consts'
+import { Table } from '../../types'
 
 const invoke: Middleware = async (ctx) => {
   const { workId, prompt, mainAgentId, autoRunScope } = ctx.request.body as {
@@ -31,19 +34,35 @@ const invoke: Middleware = async (ctx) => {
     messageCollector: new MessageCollector(),
   })
 
+  await db<Table.Work>(WORK_TABLE_NAME).insert({
+    id: agentCluster.id,
+    mainAgentId,
+    prompt,
+    autoRunScope,
+    trigger: 'user',
+    status: 'running',
+    createdAt: new Date() as any,
+  })
+
   resolverManager.addAgentResolver(agentCluster.id, {
     resolveConfirmTool,
     resolveAgentStart,
   })
 
-  function closeAll() {
+  async function closeAll() {
     send({ type: 'endWork', data: { workId: agentCluster.id } })
     close()
     agentCluster.stop()
     resolverManager.removeAgentResolver(agentCluster.id)
+    await db<Table.Work>(WORK_TABLE_NAME)
+      .where({ id: agentCluster.id })
+      .update({
+        status: 'completed',
+        endedAt: new Date() as any,
+      })
   }
 
-  ctx.req.on('close', closeAll)
+  // ctx.req.on('close', closeAll)
 
   // 由于是流式响应，不返回常规的响应体
   ctx.body = stream

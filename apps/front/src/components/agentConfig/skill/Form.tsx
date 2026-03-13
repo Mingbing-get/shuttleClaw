@@ -1,4 +1,5 @@
 import { Form, Input, Modal } from 'antd'
+import { useState } from 'react'
 
 interface SkillFormProps {
   open: boolean
@@ -8,9 +9,11 @@ interface SkillFormProps {
 
 export default function SkillForm({ open, onOk, onCancel }: SkillFormProps) {
   const [form] = Form.useForm<{ skillName?: string }>()
+  const [loading, setLoading] = useState(false)
 
   const handleOk = async () => {
     try {
+      setLoading(true)
       const values = await form.validateFields()
       const success = await onOk(values)
       if (success) {
@@ -18,6 +21,8 @@ export default function SkillForm({ open, onOk, onCancel }: SkillFormProps) {
       }
     } catch (error) {
       console.error('Validation failed:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -28,6 +33,9 @@ export default function SkillForm({ open, onOk, onCancel }: SkillFormProps) {
       onOk={handleOk}
       onCancel={onCancel}
       okText="确定"
+      okButtonProps={{
+        loading,
+      }}
       cancelText="取消"
       width={600}
     >

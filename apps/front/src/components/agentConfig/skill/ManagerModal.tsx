@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Modal, message, Row, Col, Spin } from 'antd'
+import { Button, Modal, message, Row, Col, Spin, Empty } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { skillApi } from '../../../apis'
@@ -130,18 +130,22 @@ export default function SkillManagerModal({
           >
             安装技能
           </Button>
-          <Row gutter={[16, 16]}>
-            {skills.map((skill) => (
-              <Col key={skill.id} xs={24} sm={12} lg={8}>
-                <SkillCard
-                  skill={skill}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onToggleEnabled={handleToggleEnabled}
-                />
-              </Col>
-            ))}
-          </Row>
+          {skills.length > 0 ? (
+            <Row gutter={[16, 16]}>
+              {skills.map((skill) => (
+                <Col key={skill.id} xs={24} sm={12} lg={8}>
+                  <SkillCard
+                    skill={skill}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onToggleEnabled={handleToggleEnabled}
+                  />
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <Empty description="暂无技能，点击左上角安装技能" />
+          )}
         </Spin>
       </Modal>
 

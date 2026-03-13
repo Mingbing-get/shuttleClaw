@@ -1,4 +1,5 @@
 export { agentApi } from './agent'
+export { workApi } from './work'
 export { authApi } from './auth'
 export { mcpApi } from './mcp'
 export { modelApi } from './model'
