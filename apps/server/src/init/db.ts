@@ -77,6 +77,7 @@ async function initMCPTable() {
       id: (table) => table.string('id').primary(),
       agentId: (table) => table.string('agentId').notNullable(),
       config: (table) => table.json('config').notNullable(),
+      env: (table) => table.json('env'),
       enabled: (table) =>
         table.boolean('enabled').notNullable().defaultTo(true),
       createdAt: (table) => table.dateTime('createdAt').notNullable(),

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Modal, message, Row, Col } from 'antd'
+import { Button, Modal, message, Row, Col, Spin } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { skillApi } from '../../../apis'
 import type { Table } from '../../../apis/types'
 import SkillCard from './Card'
 import SkillForm from './Form'
+import EnvSetting from './envSetting'
 
 interface SkillManagerModalProps {
   open: boolean
@@ -22,13 +23,8 @@ export default function SkillManagerModal({
 }: SkillManagerModalProps) {
   const [skills, setSkills] = useState<Table.Skill[]>([])
   const [loading, setLoading] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [formInitialValues, setFormInitialValues] = useState<{
-    skillName?: string
-    describe?: string
-    env?: string
-  }>()
+  const [editEnvSkill, setEditEnvSkill] = useState<Table.Skill>()
 
   const loadSkills = useCallback(async () => {
     setLoading(true)
@@ -51,19 +47,11 @@ export default function SkillManagerModal({
   }, [open, loadSkills])
 
   const handleAdd = useCallback(() => {
-    setEditingId(null)
-    setFormInitialValues(undefined)
     setIsModalOpen(true)
   }, [])
 
   const handleEdit = useCallback((skill: Table.Skill) => {
-    setEditingId(skill.id)
-    setFormInitialValues({
-      skillName: skill.skillName,
-      describe: skill.describe,
-      env: skill.env ? JSON.stringify(skill.env, null, 2) : '',
-    })
-    setIsModalOpen(true)
+    setEditEnvSkill(skill)
   }, [])
 
   const handleDelete = useCallback(
@@ -93,28 +81,22 @@ export default function SkillManagerModal({
   )
 
   const handleFormOk = useCallback(
-    async (values: { skillName?: string; env?: string }) => {
+    async (values: { skillName?: string }) => {
       try {
-        const env = values.env ? JSON.parse(values.env) : {}
-
-        let res
-        if (editingId) {
-          res = await skillApi.update(editingId, { env })
-        } else {
-          res = await skillApi.install({
-            agentId,
-            installSource: {
-              type: 'github',
-              url: values.skillName || '',
-            },
-            enabled: true,
-          })
-        }
+        const res = await skillApi.install({
+          agentId,
+          installSource: {
+            type: 'github',
+            url: values.skillName || '',
+          },
+          enabled: true,
+        })
 
         if (res.code === 200) {
-          message.success(editingId ? '更新成功' : '安装成功')
+          message.success('安装成功')
           setIsModalOpen(false)
           loadSkills()
+          return true
         } else {
           message.error(res.message || '操作失败')
         }
@@ -122,8 +104,13 @@ export default function SkillManagerModal({
         message.error('配置格式错误，请检查 JSON 格式')
       }
     },
-    [editingId, agentId, loadSkills],
+    [agentId, loadSkills],
   )
+
+  const handleSettingEnvOk = useCallback(() => {
+    setEditEnvSkill(undefined)
+    loadSkills()
+  }, [loadSkills])
 
   return (
     <>
@@ -134,34 +121,43 @@ export default function SkillManagerModal({
         footer={null}
         width={900}
       >
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleAdd}
-          style={{ marginBottom: 16 }}
-        >
-          安装技能
-        </Button>
-        <Row gutter={[16, 16]}>
-          {skills.map((skill) => (
-            <Col key={skill.id} xs={24} sm={12} lg={8}>
-              <SkillCard
-                skill={skill}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onToggleEnabled={handleToggleEnabled}
-              />
-            </Col>
-          ))}
-        </Row>
+        <Spin spinning={loading}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            style={{ marginBottom: 16 }}
+          >
+            安装技能
+          </Button>
+          <Row gutter={[16, 16]}>
+            {skills.map((skill) => (
+              <Col key={skill.id} xs={24} sm={12} lg={8}>
+                <SkillCard
+                  skill={skill}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onToggleEnabled={handleToggleEnabled}
+                />
+              </Col>
+            ))}
+          </Row>
+        </Spin>
       </Modal>
 
       <SkillForm
         open={isModalOpen}
-        editingId={editingId}
-        initialValues={formInitialValues}
         onOk={handleFormOk}
         onCancel={() => setIsModalOpen(false)}
+      />
+
+      <EnvSetting
+        open={!!editEnvSkill}
+        id={editEnvSkill?.id || ''}
+        envDefine={editEnvSkill?.envDefine}
+        envKeys={editEnvSkill?.envKeys}
+        onOk={handleSettingEnvOk}
+        onCancel={() => setEditEnvSkill(undefined)}
       />
     </>
   )

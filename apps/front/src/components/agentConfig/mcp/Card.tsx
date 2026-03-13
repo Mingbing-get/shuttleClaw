@@ -1,4 +1,4 @@
-import { Card, Switch, Button, Space, Popconfirm } from 'antd'
+import { Card, Switch, Button, Space, Popconfirm, Tag, Divider } from 'antd'
 import type { Table } from '../../../apis/types'
 
 interface McpCardProps {
@@ -16,6 +16,7 @@ export default function McpCard({
 }: McpCardProps) {
   return (
     <Card
+      className="justify-card"
       size="small"
       title={mcp.config.name}
       extra={
@@ -57,6 +58,23 @@ export default function McpCard({
           <span>{mcp.config.description}</span>
         </div>
       )}
+      {mcp.envKeys?.length ? (
+        <>
+          <Divider style={{ margin: '4px 0' }} />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              flexWrap: 'wrap',
+            }}
+          >
+            {mcp.envKeys.map((key) => (
+              <Tag key={key}>{key}</Tag>
+            ))}
+          </div>
+        </>
+      ) : null}
     </Card>
   )
 }

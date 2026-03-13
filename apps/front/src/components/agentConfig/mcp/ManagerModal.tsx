@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Modal, message, Row, Col } from 'antd'
+import { Button, Modal, message, Row, Col, Spin } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { mcpApi } from '../../../apis'
@@ -24,7 +24,10 @@ export default function McpManagerModal({
   const [loading, setLoading] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [formInitialValues, setFormInitialValues] = useState<string>()
+  const [formInitialValues, setFormInitialValues] = useState<{
+    config: string
+    envKeys?: string[]
+  }>()
 
   const loadMcps = useCallback(async () => {
     setLoading(true)
@@ -54,7 +57,10 @@ export default function McpManagerModal({
 
   const handleEdit = useCallback((mcp: Table.MCP) => {
     setEditingId(mcp.id)
-    setFormInitialValues(JSON.stringify(mcp.config, null, 2))
+    setFormInitialValues({
+      config: JSON.stringify(mcp.config, null, 2),
+      envKeys: mcp.envKeys,
+    })
     setIsModalOpen(true)
   }, [])
 
@@ -85,13 +91,16 @@ export default function McpManagerModal({
   )
 
   const handleFormOk = useCallback(
-    async (values: { config: string }) => {
+    async (values: { config: string; envKeys?: string[] }) => {
       try {
         const config = JSON.parse(values.config)
 
         let res
         if (editingId) {
-          res = await mcpApi.update(editingId, { config })
+          res = await mcpApi.update(editingId, {
+            config,
+            envKeys: values.envKeys,
+          })
         } else {
           res = await mcpApi.create({ agentId, config, enabled: true })
         }
@@ -100,6 +109,7 @@ export default function McpManagerModal({
           message.success(editingId ? '更新成功' : '添加成功')
           setIsModalOpen(false)
           loadMcps()
+          return true
         } else {
           message.error(res.message || '操作失败')
         }
@@ -119,26 +129,28 @@ export default function McpManagerModal({
         footer={null}
         width={900}
       >
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleAdd}
-          style={{ marginBottom: 16 }}
-        >
-          添加 MCP
-        </Button>
-        <Row gutter={[16, 16]}>
-          {mcps.map((mcp) => (
-            <Col key={mcp.id} xs={24} sm={12} lg={8}>
-              <McpCard
-                mcp={mcp}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onToggleEnabled={handleToggleEnabled}
-              />
-            </Col>
-          ))}
-        </Row>
+        <Spin spinning={loading}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            style={{ marginBottom: 16 }}
+          >
+            添加 MCP
+          </Button>
+          <Row gutter={[16, 16]}>
+            {mcps.map((mcp) => (
+              <Col key={mcp.id} xs={24} sm={12} lg={8}>
+                <McpCard
+                  mcp={mcp}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onToggleEnabled={handleToggleEnabled}
+                />
+              </Col>
+            ))}
+          </Row>
+        </Spin>
       </Modal>
 
       <McpForm

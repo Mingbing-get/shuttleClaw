@@ -1,5 +1,6 @@
 import { Card, Switch, Button, Space, Popconfirm, Tag } from 'antd'
 import type { Table } from '../../../apis/types'
+import { useMemo } from 'react'
 
 interface SkillCardProps {
   skill: Table.Skill
@@ -14,8 +15,35 @@ export default function SkillCard({
   onDelete,
   onToggleEnabled,
 }: SkillCardProps) {
+  const actions = useMemo(() => {
+    const actions = [
+      <Popconfirm
+        title="确认删除"
+        description="确定要删除这个技能吗？"
+        onConfirm={() => onDelete(skill.id)}
+        okText="确定"
+        cancelText="取消"
+      >
+        <Button type="link" size="small" danger>
+          删除
+        </Button>
+      </Popconfirm>,
+    ]
+
+    if (skill.envDefine) {
+      actions.unshift(
+        <Button type="link" size="small" onClick={() => onEdit(skill)}>
+          环境变量
+        </Button>,
+      )
+    }
+
+    return actions
+  }, [skill, onEdit, onDelete])
+
   return (
     <Card
+      className="justify-card"
       size="small"
       title={<Tag color="blue">{skill.skillName}</Tag>}
       extra={
@@ -26,22 +54,7 @@ export default function SkillCard({
           />
         </Space>
       }
-      actions={[
-        <Button type="link" size="small" onClick={() => onEdit(skill)}>
-          编辑
-        </Button>,
-        <Popconfirm
-          title="确认删除"
-          description="确定要删除这个技能吗？"
-          onConfirm={() => onDelete(skill.id)}
-          okText="确定"
-          cancelText="取消"
-        >
-          <Button type="link" size="small" danger>
-            删除
-          </Button>
-        </Popconfirm>,
-      ]}
+      actions={actions}
     >
       {skill.describe && (
         <div style={{ marginBottom: 8 }}>

@@ -27,6 +27,7 @@ export namespace Table {
     id: string
     agentId: string
     config: Record<string, any>
+    env?: Record<string, string> | null
     enabled: boolean
     createdAt: string
     updatedAt: string
@@ -55,8 +56,11 @@ export namespace Table {
     agentId: string
     skillName: string
     describe: string
-    envDefine?: Record<string, any> | null
-    env?: Record<string, any> | null
+    envDefine?: {
+      requires?: string[]
+      variables?: string[]
+    } | null
+    env?: Record<string, string> | null
     enabled: boolean
     createdAt: string
     updatedAt: string

@@ -18,7 +18,12 @@ const queryMcpById: Middleware = async (ctx) => {
     return
   }
 
-  resModel.setData(record)
+  const { env = {}, ...rest } = record
+
+  resModel.setData({
+    ...rest,
+    envKeys: Object.keys(env || {}),
+  })
 }
 
 export default queryMcpById

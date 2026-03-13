@@ -15,6 +15,7 @@ export namespace Table {
     id: string
     agentId: string
     config: Record<string, any>
+    envKeys?: string[]
     enabled: boolean
     createdAt: string
     updatedAt: string
@@ -43,8 +44,12 @@ export namespace Table {
     agentId: string
     skillName: string
     describe: string
-    envDefine?: Record<string, any> | null
-    env?: Record<string, any> | null
+    envDefine?: {
+      requires?: string[]
+      variables?: string[]
+    } | null
+    env?: Record<string, string> | null
+    envKeys?: string[]
     enabled: boolean
     createdAt: string
     updatedAt: string
@@ -75,7 +80,7 @@ export namespace Update {
   export type Model = Partial<
     Omit<Table.Model, 'id' | 'createdAt' | 'updatedAt'>
   >
-  export type Skill = Partial<Pick<Table.Skill, 'enabled' | 'env'>>
+  export type Skill = Partial<Pick<Table.Skill, 'enabled' | 'env' | 'envKeys'>>
 }
 
 export interface Pagination {

@@ -44,8 +44,13 @@ const queryMcp: Middleware = async (ctx) => {
 
   const records = await query.orderBy(sortBy, sortOrder)
 
+  const hiddenEnvRecords = records.map(({ env, ...record }) => ({
+    ...record,
+    envKeys: Object.keys(env || {}),
+  }))
+
   resModel.setData({
-    list: records,
+    list: hiddenEnvRecords,
     pagination: {
       page: Number(page),
       pageSize: Number(pageSize),

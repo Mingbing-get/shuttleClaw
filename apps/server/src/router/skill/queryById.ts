@@ -18,7 +18,12 @@ const querySkillById: Middleware = async (ctx) => {
     return
   }
 
-  resModel.setData(record)
+  const { env = {}, ...extra } = record
+
+  resModel.setData({
+    ...extra,
+    envKeys: Object.keys(env || {}),
+  })
 }
 
 export default querySkillById

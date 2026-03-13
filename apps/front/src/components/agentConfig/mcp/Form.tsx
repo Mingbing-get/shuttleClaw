@@ -1,10 +1,17 @@
-import { Form, Input, Modal } from 'antd'
+import { Form, Input, Modal, Select } from 'antd'
+import { useEffect, useMemo } from 'react'
 
 interface McpFormProps {
   open: boolean
   editingId: string | null
-  initialValues?: string
-  onOk: (values: { config: string }) => void
+  initialValues?: {
+    config: string
+    envKeys?: string[]
+  }
+  onOk: (data: {
+    config: string
+    envKeys?: string[]
+  }) => Promise<boolean | undefined | void>
   onCancel: () => void
 }
 
@@ -15,16 +22,37 @@ export default function McpForm({
   onOk,
   onCancel,
 }: McpFormProps) {
-  const [form] = Form.useForm<{ config: string }>()
+  const [form] = Form.useForm<{ config: string; envKeys?: string[] }>()
 
   const handleOk = async () => {
     try {
       const values = await form.validateFields()
-      onOk(values)
+      const reset = await onOk(values)
+      if (reset) {
+        form.resetFields()
+      }
     } catch (error) {
       console.error('Validation failed:', error)
     }
   }
+
+  const envOptions = useMemo(() => {
+    return (
+      initialValues?.envKeys?.map((key) => ({
+        label: key,
+        value: key,
+      })) || []
+    )
+  }, [initialValues])
+
+  useEffect(() => {
+    if (!initialValues) {
+      form.resetFields()
+      return
+    }
+
+    form.setFieldsValue(initialValues)
+  }, [initialValues, form])
 
   return (
     <Modal
@@ -36,7 +64,7 @@ export default function McpForm({
       cancelText="取消"
       width={600}
     >
-      <Form form={form} layout="vertical" initialValues={{ config: initialValues }}>
+      <Form form={form} layout="vertical">
         <Form.Item
           label="配置 (JSON 格式)"
           name="config"
@@ -47,9 +75,7 @@ export default function McpForm({
                 try {
                   const config = JSON.parse(value)
                   if (!config.name || !config.type || !config.url) {
-                    return Promise.reject(
-                      '配置必须包含 name、type 和 url 字段',
-                    )
+                    return Promise.reject('配置必须包含 name、type 和 url 字段')
                   }
                   if (config.type !== 'streamable_http') {
                     return Promise.reject('type 必须为 streamable_http')
@@ -67,6 +93,15 @@ export default function McpForm({
             rows={10}
           />
         </Form.Item>
+        {editingId && (
+          <Form.Item label="环境变量" name="envKeys">
+            <Select
+              mode="multiple"
+              placeholder="保留环境变量"
+              options={envOptions}
+            />
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   )
