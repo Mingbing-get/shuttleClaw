@@ -9,6 +9,11 @@ export const mcpApi = {
   query: (params?: QueryParams) =>
     api.get<ListResponse<Table.MCP>>(API_ENDPOINTS.MCP.LIST, { params }),
 
+  queryByAgentId: (agentId: string) =>
+    api.get<ListResponse<Table.MCP>>(API_ENDPOINTS.MCP.LIST, {
+      params: { agentId, page: -1 },
+    }),
+
   queryById: (id: string) => api.get<Table.MCP>(API_ENDPOINTS.MCP.DETAIL(id)),
 
   update: (id: string, data: Update.MCP) =>

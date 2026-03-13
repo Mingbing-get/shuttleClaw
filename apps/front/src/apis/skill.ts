@@ -9,6 +9,11 @@ export const skillApi = {
   query: (params?: QueryParams) =>
     api.get<ListResponse<Table.Skill>>(API_ENDPOINTS.SKILL.LIST, { params }),
 
+  queryByAgentId: (agentId: string) =>
+    api.get<ListResponse<Table.Skill>>(API_ENDPOINTS.SKILL.LIST, {
+      params: { agentId, page: -1 },
+    }),
+
   queryById: (id: string) =>
     api.get<Table.Skill>(API_ENDPOINTS.SKILL.DETAIL(id)),
 

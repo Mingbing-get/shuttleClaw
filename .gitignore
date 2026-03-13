@@ -2,7 +2,7 @@
 node_modules/
 .pnpm-store/
 
-apps/server/.agent
+apps/server/.agents
 .agents
 .trae
 

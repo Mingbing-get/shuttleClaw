@@ -1,9 +1,17 @@
 import { useCallback, useState } from 'react'
 import { Button, Popconfirm, message, Tag } from 'antd'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ApiOutlined,
+  AppstoreOutlined,
+} from '@ant-design/icons'
 
-import { agentApi, Table } from '../../apis'
+import { agentApi } from '../../apis'
+import type { Table } from '../../apis/types'
 import AgentForm from './AgentForm'
+import McpManagerModal from './McpManagerModal'
+import SkillManagerModal from './SkillManagerModal'
 
 interface AgentNodeProps {
   agent: Table.Agent
@@ -13,6 +21,8 @@ interface AgentNodeProps {
 
 export default function AgentNode({ agent, onEdit, onDelete }: AgentNodeProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isMcpModalOpen, setIsMcpModalOpen] = useState(false)
+  const [isSkillModalOpen, setIsSkillModalOpen] = useState(false)
 
   const handleDelete = useCallback(async () => {
     const res = await agentApi.delete(agent.id)
@@ -52,6 +62,22 @@ export default function AgentNode({ agent, onEdit, onDelete }: AgentNodeProps) {
         <div className="agent-config__tree-node__actions">
           <Button
             type="text"
+            icon={<ApiOutlined />}
+            onClick={() => {
+              setIsMcpModalOpen(true)
+            }}
+            title="管理 MCP"
+          />
+          <Button
+            type="text"
+            icon={<AppstoreOutlined />}
+            onClick={() => {
+              setIsSkillModalOpen(true)
+            }}
+            title="管理技能"
+          />
+          <Button
+            type="text"
             icon={<EditOutlined />}
             onClick={() => {
               setIsModalOpen(true)
@@ -74,7 +100,27 @@ export default function AgentNode({ agent, onEdit, onDelete }: AgentNodeProps) {
         title={'修改智能体'}
         initialValues={agent}
         onOk={handleFormOk}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={() => {
+          setIsModalOpen(false)
+        }}
+      />
+
+      <McpManagerModal
+        open={isMcpModalOpen}
+        agentId={agent.id}
+        agentName={agent.name}
+        onCancel={() => {
+          setIsMcpModalOpen(false)
+        }}
+      />
+
+      <SkillManagerModal
+        open={isSkillModalOpen}
+        agentId={agent.id}
+        agentName={agent.name}
+        onCancel={() => {
+          setIsSkillModalOpen(false)
+        }}
       />
     </>
   )
