@@ -10,8 +10,8 @@ import {
 import { agentApi } from '../../apis'
 import type { Table } from '../../apis/types'
 import AgentForm from './AgentForm'
-import McpManagerModal from './McpManagerModal'
-import SkillManagerModal from './SkillManagerModal'
+import McpManagerModal from './mcp/ManagerModal'
+import SkillManagerModal from './skill/ManagerModal'
 
 interface AgentNodeProps {
   agent: Table.Agent

@@ -45,6 +45,11 @@ const request = async <T = any>(
 
   const result = await response.json()
 
+  if (result.code === 401) {
+    localStorage.removeItem(TOKEN_KEY)
+    window.location.reload()
+  }
+
   return result as ApiResponse<T>
 }
 
