@@ -63,7 +63,7 @@ export default function createLoadAgent(mainAgentId?: string) {
     const mpcs = await db<Table.MCP>(MCP_TABLE_NAME)
       .where('agentId', '=', agent.id)
       .andWhere('enabled', '=', true)
-      .select('config')
+      .select('config', 'env')
 
     let skillLoader: SkillLoader | undefined
     if (skills.length > 0) {
@@ -72,7 +72,11 @@ export default function createLoadAgent(mainAgentId?: string) {
         pickSkillNames: skills.map((skill) => skill.skillName),
         async getEnv(skillName) {
           const skill = skills.find((s) => s.skillName === skillName)
-          return skill?.env || {}
+          const factEnv: Record<string, string> = {}
+          for (const key in skill?.env) {
+            factEnv[key] = decrypt(skill.env[key])
+          }
+          return factEnv
         },
       })
     }
@@ -88,7 +92,17 @@ export default function createLoadAgent(mainAgentId?: string) {
 
     return {
       model,
-      mcps: mpcs.map((mcp) => mcp.config as ShuttleAi.MCP.ServerConfig),
+      mcps: mpcs.map((mcp) => {
+        const factEnv: Record<string, string> = {}
+        for (const key in mcp.env) {
+          factEnv[key] = decrypt(mcp.env[key])
+        }
+
+        return {
+          ...mcp.config,
+          env: factEnv,
+        } as any
+      }),
       subAgents: subAgents
         .filter((subAgent) => !subAgent.isLazy)
         .map((subAgent) => ({
