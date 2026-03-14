@@ -1,0 +1,26 @@
+.toggle-work-panel-wrapper {
+  position: absolute;
+  top: -18px;
+  left: -20px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  .toggle-work-panel-button {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    padding: 4px 4px 4px 8px;
+    border-top-right-radius: 13px;
+    border-bottom-right-radius: 13px;
+    cursor: pointer;
+    color: var(--ant-color-primary);
+
+    transform: translateX(-10px);
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateX(0);
+    }
+  }
+}
