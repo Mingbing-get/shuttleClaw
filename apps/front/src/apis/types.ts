@@ -138,11 +138,18 @@ export interface MoveAgentParams {
 }
 
 export interface QueryWorkParams extends Pick<
-  Table.Work,
+  Partial<Table.Work>,
   'trigger' | 'status' | 'autoRunScope' | 'mainAgentId'
 > {
   page?: number
   pageSize?: number
   sortBy?: string
   sortOrder?: 'asc' | 'desc'
+}
+
+export interface QueryNearOneParams extends Pick<
+  Partial<Table.Work>,
+  'trigger' | 'status' | 'autoRunScope' | 'mainAgentId'
+> {
+  lastId?: string
 }

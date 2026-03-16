@@ -4,18 +4,23 @@ import { Table, workApi } from '../../../apis'
 import type { QueryWorkParams } from '../../../apis/types'
 
 interface Props {
+  agentId?: string
   onClick?: (work: Table.Work) => void
 }
 
 const PAGE_SIZE = 20
 
-export default function WorkList({ onClick }: Props) {
+export default function WorkList({ agentId, onClick }: Props) {
   const [works, setWorks] = useState<Table.Work[]>([])
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1)
-  const [filters, setFilters] = useState<Partial<QueryWorkParams>>({})
+  const [filters, setFilters] = useState<Partial<QueryWorkParams>>({
+    mainAgentId: agentId,
+  })
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => handleFilterChange('mainAgentId', agentId), [agentId])
 
   const fetchWorks = useCallback(
     async (

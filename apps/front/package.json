@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "vite build",
-    "dev": "vite",
+    "dev": "vite --force",
     "clean": "rm -rf dist",
     "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"

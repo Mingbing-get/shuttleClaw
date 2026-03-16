@@ -3,6 +3,7 @@ import { Middleware } from '@koa/router'
 import { ShuttleAi } from '@shuttle-ai/type'
 import { AgentCluster, readableHook } from '@shuttle-ai/agent'
 
+import snowFlake from '../../config/snowFlake'
 import resolverManager from './utils/resolverManager'
 import MessageCollector from './utils/messageCollector'
 import createLoadAgent from './utils/loadAgent'
@@ -11,8 +12,7 @@ import { WORK_TABLE_NAME } from '../../config/consts'
 import { Table } from '../../types'
 
 const invoke: Middleware = async (ctx) => {
-  const { workId, prompt, mainAgentId, autoRunScope } = ctx.request.body as {
-    workId: string
+  const { prompt, mainAgentId, autoRunScope } = ctx.request.body as {
     prompt: string
     mainAgentId?: string
     autoRunScope?: ShuttleAi.Cluster.AutoRunScope
@@ -28,7 +28,7 @@ const invoke: Middleware = async (ctx) => {
     readableHook(createLoadAgent(mainAgentId))
 
   const agentCluster = new AgentCluster({
-    id: workId,
+    id: snowFlake.next(),
     hooks: hooks,
     autoRunScope,
     messageCollector: new MessageCollector(),
