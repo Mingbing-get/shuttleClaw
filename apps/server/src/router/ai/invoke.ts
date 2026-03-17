@@ -6,7 +6,8 @@ import { AgentCluster, readableHook } from '@shuttle-ai/agent'
 import snowFlake from '../../config/snowFlake'
 import resolverManager from './utils/resolverManager'
 import MessageCollector from './utils/messageCollector'
-import createLoadAgent from './utils/loadAgent'
+import createLoadAgent from '../../utils/loadAgent'
+import saveMemory from '../../utils/saveMemory'
 import db from '../../config/db'
 import { WORK_TABLE_NAME } from '../../config/consts'
 import { Table } from '../../types'
@@ -54,6 +55,7 @@ const invoke: Middleware = async (ctx) => {
     close()
     agentCluster.stop()
     resolverManager.removeAgentResolver(agentCluster.id)
+    saveMemory(agentCluster.getMessages(), mainAgentId)
     await db<Table.Work>(WORK_TABLE_NAME)
       .where({ id: agentCluster.id })
       .update({
@@ -62,7 +64,7 @@ const invoke: Middleware = async (ctx) => {
       })
   }
 
-  // ctx.req.on('close', closeAll)
+  ctx.req.on('close', closeAll)
 
   // 由于是流式响应，不返回常规的响应体
   ctx.body = stream

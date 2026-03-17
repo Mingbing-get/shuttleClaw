@@ -3,9 +3,10 @@ import { ChatOpenAI } from '@langchain/openai'
 import { ShuttleAi } from '@shuttle-ai/type'
 import { AgentCluster } from '@shuttle-ai/agent'
 import { SkillLoader } from '@shuttle-ai/skill'
+import { createUseMemoryTools } from '@shuttle-ai/memory'
 
-import { decrypt } from '../../../utils/secret'
-import db from '../../../config/db'
+import { decrypt } from './secret'
+import db from '../config/db'
 import {
   MODEL_TABLE_NAME,
   AGENT_TABLE_NAME,
@@ -13,8 +14,9 @@ import {
   MCP_TABLE_NAME,
   AGENT_DIR,
   SKILL_DIR,
-} from '../../../config/consts'
-import { Table } from '../../../types'
+  MEMORY_DIR,
+} from '../config/consts'
+import { Table } from '../types'
 
 export default function createLoadAgent(mainAgentId?: string) {
   async function loadAgent(
@@ -33,7 +35,12 @@ export default function createLoadAgent(mainAgentId?: string) {
       agentHandle.where('name', '=', agentName)
     }
 
-    const agent = await agentHandle.first('id', 'modelId', 'enabled')
+    const agent = await agentHandle.first(
+      'id',
+      'modelId',
+      'enabled',
+      'describe',
+    )
     if (!agent) {
       throw new Error(`Agent ${name} not found`)
     }
@@ -90,8 +97,16 @@ export default function createLoadAgent(mainAgentId?: string) {
       streaming: true,
     })
 
+    const memoryTools = createUseMemoryTools({
+      dir: resolve(process.cwd(), AGENT_DIR, agentName, MEMORY_DIR),
+    })
+
     return {
       model,
+      systemPrompt: [
+        agent.describe || '',
+        `你拥有长期的**记忆系统**，在需要回忆之前的对话内容或借鉴以前的经验时，可以使用${memoryTools.map((tool) => tool.name).join('、')}等方法`,
+      ].join('\n'),
       mcps: mpcs.map((mcp) => {
         const factEnv: Record<string, string> = {}
         for (const key in mcp.env) {
@@ -103,6 +118,7 @@ export default function createLoadAgent(mainAgentId?: string) {
           env: factEnv,
         } as any
       }),
+      tools: memoryTools,
       subAgents: subAgents
         .filter((subAgent) => !subAgent.isLazy)
         .map((subAgent) => ({

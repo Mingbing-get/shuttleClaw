@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo } from 'react'
-import { Form, Input, Modal, Select, message } from 'antd'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Button, Form, Input, Modal, Select, message } from 'antd'
 import { Table, skillApi } from '../../../apis'
 
 interface SkillFormProps {
@@ -25,6 +25,7 @@ export default function SkillForm({
   }>()
 
   const keepKeys = Form.useWatch(['envKeys'], form)
+  const [customEnvKeys, setCustomEnvKeys] = useState<string[]>([])
 
   const handleOk = useCallback(async () => {
     try {
@@ -83,8 +84,36 @@ export default function SkillForm({
       })
     })
 
+    customEnvKeys.forEach((key) => {
+      if (keepKeys?.includes(key)) return
+
+      editFields.push({
+        key,
+        required: false,
+      })
+    })
+
     return editFields
-  }, [keepKeys, envDefine])
+  }, [customEnvKeys, keepKeys, envDefine])
+
+  const handleAddCustomEnvKey = useCallback(() => {
+    let newKey = ''
+
+    const modelInstance = Modal.confirm({
+      title: '添加自定义环境变量',
+      content: <Input onChange={(e) => (newKey = e.target.value)} />,
+      okText: '确定',
+      cancelText: '取消',
+      onOk: (values) => {
+        if (!newKey) {
+          message.error('请输入环境变量名')
+          return
+        }
+        setCustomEnvKeys((prev) => [...prev, newKey])
+        modelInstance.destroy()
+      },
+    })
+  }, [])
 
   return (
     <Modal
@@ -119,6 +148,11 @@ export default function SkillForm({
             <Input />
           </Form.Item>
         ))}
+        <Form.Item style={{ textAlign: 'center' }}>
+          <Button type="primary" onClick={handleAddCustomEnvKey}>
+            添加
+          </Button>
+        </Form.Item>
       </Form>
     </Modal>
   )

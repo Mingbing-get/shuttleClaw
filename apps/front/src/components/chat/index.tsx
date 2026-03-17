@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { Flex, Spin } from 'antd'
 import { AgentWorkRenderMultiple } from '@shuttle-ai/render-react'
 import { ShuttleAi } from '@shuttle-ai/type'
-import { Flex, Spin } from 'antd'
 
 import transporter from '../../config/transporter'
 import AgentPicker from '../agentPicker'
@@ -11,6 +11,7 @@ import {
   useLocalstorageState,
 } from '../../hooks'
 import DrawerWorkList from './drawerWorkList'
+import initAgent from './initAgent'
 
 import '@shuttle-ai/render-react/style.css'
 import './index.scss'
@@ -38,6 +39,7 @@ export default function Chat() {
         transporter={transporter}
         context={{}}
         works={works}
+        initAgent={initAgent}
         disabled={!selectedAgentId}
         style={{
           boxSizing: 'border-box',

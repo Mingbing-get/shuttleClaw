@@ -12,3 +12,4 @@ export const MESSAGE_TABLE_NAME = `${DB_TABLE_PREFIX}message`
 
 export const AGENT_DIR = '.agents'
 export const SKILL_DIR = 'skills'
+export const MEMORY_DIR = 'memory'

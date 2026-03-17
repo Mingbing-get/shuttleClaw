@@ -17,6 +17,9 @@ export default function SkillCard({
 }: SkillCardProps) {
   const actions = useMemo(() => {
     const actions = [
+      <Button type="link" size="small" onClick={() => onEdit(skill)}>
+        环境变量
+      </Button>,
       <Popconfirm
         title="确认删除"
         description="确定要删除这个技能吗？"
@@ -29,14 +32,6 @@ export default function SkillCard({
         </Button>
       </Popconfirm>,
     ]
-
-    if (skill.envDefine) {
-      actions.unshift(
-        <Button type="link" size="small" onClick={() => onEdit(skill)}>
-          环境变量
-        </Button>,
-      )
-    }
 
     return actions
   }, [skill, onEdit, onDelete])
