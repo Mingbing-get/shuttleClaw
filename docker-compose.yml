@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: shuttle-claw-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${DB_NAME:-shuttle_claw}
+      MYSQL_USER: ${DB_USER:-shuttle_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-shuttle_password}
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - shuttle-network
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ./apps/server
+      dockerfile: Dockerfile
+    container_name: shuttle-claw-server
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_CLIENT: mysql2
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-shuttle_user}
+      DB_PASSWORD: ${DB_PASSWORD:-shuttle_password}
+      DB_NAME: ${DB_NAME:-shuttle_claw}
+      DB_POOL_MIN: 2
+      DB_POOL_MAX: 10
+      DB_POOL_ACQUIRE_TIMEOUT: 30000
+      DB_POOL_IDLE_TIMEOUT: 60000
+      DB_TABLE_PREFIX: shuttle_claw_
+      SNOWFLAKE_WORKER_ID: 1
+      SNOWFLAKE_START_DATE: '2026-01-01'
+      PASS_API_KEY: ${PASS_API_KEY:-123456}
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_change_this}
+      VAR_SECRET: ${VAR_SECRET:-your_var_secret_change_this}
+      PORT: 3010
+    ports:
+      - '3010:3010'
+    networks:
+      - shuttle-network
+
+  front:
+    build:
+      context: ./apps/front
+      dockerfile: Dockerfile
+    container_name: shuttle-claw-front
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - '80:80'
+    networks:
+      - shuttle-network
+
+volumes:
+  mysql_data:
+
+networks:
+  shuttle-network:
+    driver: bridge

@@ -5,6 +5,7 @@ import mount from 'koa-mount'
 import koaStatic from 'koa-static'
 import { join } from 'path'
 import { createReadStream } from 'fs'
+import Router from '@koa/router'
 
 import errorHandle from './middleware/errorHandle'
 import aiRouter from './router/ai'
@@ -52,14 +53,17 @@ async function main() {
       }),
     ),
   )
-  app.use(mount('/auth', authRouter.routes()))
-  app.use(mount('/ai', aiRouter.routes()))
-  app.use(mount('/model', modelRouter.routes()))
-  app.use(mount('/agent', agentRouter.routes()))
-  app.use(mount('/skill', skillRouter.routes()))
-  app.use(mount('/mcp', mcpRouter.routes()))
-  app.use(mount('/work', workRouter.routes()))
-  app.use(mount('/dashboard', dashboardRouter.routes()))
+
+  const apiRouter = new Router()
+  apiRouter.use('/auth', authRouter.routes())
+  apiRouter.use('/ai', aiRouter.routes())
+  apiRouter.use('/model', modelRouter.routes())
+  apiRouter.use('/agent', agentRouter.routes())
+  apiRouter.use('/skill', skillRouter.routes())
+  apiRouter.use('/mcp', mcpRouter.routes())
+  apiRouter.use('/work', workRouter.routes())
+  apiRouter.use('/dashboard', dashboardRouter.routes())
+  app.use(mount('/api', apiRouter.routes()))
 
   // 返回public/index.html
   app.use(async (ctx) => {

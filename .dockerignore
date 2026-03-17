@@ -1,0 +1,16 @@
+node_modules
+dist
+.git
+.gitignore
+.eslintrc.js
+.prettierrc.json
+jest.config.js
+commitlint.config.cjs
+.planning
+README.md
+pnpm-lock.yaml
+.DS_Store
+*.log
+.env.local
+.env.*.local
+coverage

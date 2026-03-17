@@ -93,14 +93,14 @@ importers:
         specifier: ^2.6.8
         version: 2.6.8(react-dom@18.3.1)(react@18.3.1)
       '@shuttle-ai/client':
-        specifier: ^0.0.13
-        version: 0.0.13
+        specifier: ^0.0.14
+        version: 0.0.14
       '@shuttle-ai/render-react':
-        specifier: ^0.0.13
-        version: 0.0.13(@types/react@18.3.28)
+        specifier: ^0.0.14
+        version: 0.0.14(@types/react@18.3.28)
       '@shuttle-ai/type':
-        specifier: ^0.0.13
-        version: 0.0.13
+        specifier: ^0.0.14
+        version: 0.0.14
       antd:
         specifier: ^6.1.1
         version: 6.3.2(react-dom@18.3.1)(react@18.3.1)
@@ -142,20 +142,20 @@ importers:
         specifier: ^1.2.4
         version: 1.2.12(@langchain/core@1.1.31)
       '@shuttle-ai/agent':
-        specifier: ^0.0.13
-        version: 0.0.13
+        specifier: ^0.0.14
+        version: 0.0.14
       '@shuttle-ai/mcp-client':
-        specifier: ^0.0.13
-        version: 0.0.13
+        specifier: ^0.0.14
+        version: 0.0.14
       '@shuttle-ai/memory':
-        specifier: ^0.0.13
-        version: 0.0.13
+        specifier: ^0.0.14
+        version: 0.0.14
       '@shuttle-ai/skill':
-        specifier: ^0.0.13
-        version: 0.0.13
+        specifier: ^0.0.14
+        version: 0.0.14
       '@shuttle-ai/type':
-        specifier: ^0.0.13
-        version: 0.0.13
+        specifier: ^0.0.14
+        version: 0.0.14
       dotenv:
         specifier: ^17.2.3
         version: 17.3.1
@@ -2937,14 +2937,14 @@ packages:
       - '@types/node'
     dev: true
 
-  /@shuttle-ai/agent@0.0.13:
-    resolution: {integrity: sha512-WsJxvvSg+7AUk0Pml0qK2Ccf9nkqQZ+5YRDNOrVyJQGJue3U/0EIRDKwZL0gfjI77stIRP6y3xHrHjWmWMxXUQ==}
+  /@shuttle-ai/agent@0.0.14:
+    resolution: {integrity: sha512-jqbvYN+7sJorie5/LokYiv0G/2tMIEZ+V7ZCbyw/z0uZfsklzj5bqma8r27qntmlq/3oyoQFnRvwkex7NOy20A==}
     dependencies:
       '@langchain/core': 1.1.31
       '@langchain/openai': 1.2.12(@langchain/core@1.1.31)
-      '@shuttle-ai/mcp-client': 0.0.13
-      '@shuttle-ai/skill': 0.0.13
-      '@shuttle-ai/type': 0.0.13
+      '@shuttle-ai/mcp-client': 0.0.14
+      '@shuttle-ai/skill': 0.0.14
+      '@shuttle-ai/type': 0.0.14
       langchain: 1.2.30(@langchain/core@1.1.31)
       zod: 4.3.6
     transitivePeerDependencies:
@@ -2961,28 +2961,28 @@ packages:
       - zod-to-json-schema
     dev: false
 
-  /@shuttle-ai/client@0.0.13:
-    resolution: {integrity: sha512-GgrXi/VmdEJ4SQ2qBOHgqFnpndiraRl+gi5ERMvWPCvILAxJVK56sqKWn0iL76rySjZWejdsf33frUBv7W+ZPA==}
+  /@shuttle-ai/client@0.0.14:
+    resolution: {integrity: sha512-FjrbchN90WoUFkcX9R6Rhx3xGrHC0wvmKPYgWD7b7PsZX5rHng5Jgkws0NkBpwO0IN5w5NlKilb0fbnScx1rbg==}
     dependencies:
-      '@shuttle-ai/type': 0.0.13
+      '@shuttle-ai/type': 0.0.14
       axios: 1.13.6
       zod: 4.3.6
     transitivePeerDependencies:
       - debug
     dev: false
 
-  /@shuttle-ai/mcp-client@0.0.13:
-    resolution: {integrity: sha512-oXF0IAUuPrBF3VHhPPqu4HFcXYoGT6eWiL1l4HD5AhG7zy0B0cSCcdPfCvgQ1dgwQIfIQS83uaYGaD45lb9AuQ==}
+  /@shuttle-ai/mcp-client@0.0.14:
+    resolution: {integrity: sha512-Is0JstuLC6XbXt5G2UUJoLg5nOyC72n91BluQMn4eJ72F77JqDCrW7CStrwh+lBhYfe4Uk4DTJf/cs3T/Sb8lg==}
     dependencies:
-      '@shuttle-ai/type': 0.0.13
+      '@shuttle-ai/type': 0.0.14
     dev: false
 
-  /@shuttle-ai/memory@0.0.13:
-    resolution: {integrity: sha512-qAbPCW6TvKLrc9iI5C2Q77Pij0jvH5O9QhKYcCSFSbH/UhJHUrkeuJa9glHD7IeDH6dIEi1kO0R0s8pGzqWgqw==}
+  /@shuttle-ai/memory@0.0.14:
+    resolution: {integrity: sha512-eesmoeNsWWff4LL8g1mVGpypd+EfVYcG8lkUnOmMtMKKhV8OfjWghGXEP2JTNHbUIn4In/hJHe9zfgJQTgq8cw==}
     dependencies:
       '@langchain/core': 1.1.31
       '@langchain/openai': 1.2.12(@langchain/core@1.1.31)
-      '@shuttle-ai/type': 0.0.13
+      '@shuttle-ai/type': 0.0.14
       glob: 13.0.6
       langchain: 1.2.30(@langchain/core@1.1.31)
       zod: 4.3.6
@@ -2999,12 +2999,12 @@ packages:
       - zod-to-json-schema
     dev: false
 
-  /@shuttle-ai/render-react@0.0.13(@types/react@18.3.28):
-    resolution: {integrity: sha512-sl28mMMFNtg2fs5CEuKlddZMlu3wN6Tvk133geSBZ0bonEtpAiG/rfcNSdvpuGAmy72iGtb7+4vBpvLP5LE+xQ==}
+  /@shuttle-ai/render-react@0.0.14(@types/react@18.3.28):
+    resolution: {integrity: sha512-8cxIpGtHyLrJcXUotsSsXyHi7AFEoAlliJPjm7PrWS783BymS7m6hXFJZiuq1GMho/akAuTROGEwPIZxMdQ/FA==}
     dependencies:
       '@ant-design/icons': 6.1.0(react-dom@18.3.1)(react@18.3.1)
-      '@shuttle-ai/client': 0.0.13
-      '@shuttle-ai/type': 0.0.13
+      '@shuttle-ai/client': 0.0.14
+      '@shuttle-ai/type': 0.0.14
       antd: 6.3.2(react-dom@18.3.1)(react@18.3.1)
       classnames: 2.5.1
       github-markdown-css: 5.9.0
@@ -3024,10 +3024,10 @@ packages:
       - supports-color
     dev: false
 
-  /@shuttle-ai/skill@0.0.13:
-    resolution: {integrity: sha512-sYDk33HJ6UX01RUgtjn5xIlGQZ30Xx5SNpzp4Lnt4Ad2VcK8ZXBzSAfitcDMxOOXQdXtDVImgv+dc0KEa15lyQ==}
+  /@shuttle-ai/skill@0.0.14:
+    resolution: {integrity: sha512-aKhuhA5sZbQe9yVczC4K5bzNFyOsl9omgU6qxYxn4NTPewn6orAqL8rnyeCJdQe5XOWXUSk5eWti5ZCBdmw8mQ==}
     dependencies:
-      '@shuttle-ai/type': 0.0.13
+      '@shuttle-ai/type': 0.0.14
       adm-zip: 0.5.16
       dockerode: 4.0.9
       gray-matter: 4.0.3
@@ -3035,8 +3035,8 @@ packages:
       - supports-color
     dev: false
 
-  /@shuttle-ai/type@0.0.13:
-    resolution: {integrity: sha512-jxTiB8Js59Bd+blNcsG3PAeqdbIA+b31Nb2RBmOUQXXYXwJzsuIhnF8sZ0TVmH8RoQmdoHYqqItKm4KK0KE7bg==}
+  /@shuttle-ai/type@0.0.14:
+    resolution: {integrity: sha512-DaeOGGJ+jqBJnD9gKTYSLr3mi2nKgIB2OqdRZ79ejGhG1imqHPXe6/7xtJWJW2Atv3rMqUfKq7041aUZwDEN+Q==}
     dependencies:
       zod: 4.3.6
     dev: false
