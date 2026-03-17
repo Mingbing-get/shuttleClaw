@@ -4,6 +4,8 @@ import { ShuttleAi } from '@shuttle-ai/type'
 import { AgentCluster } from '@shuttle-ai/agent'
 import { SkillLoader } from '@shuttle-ai/skill'
 import { createUseMemoryTools } from '@shuttle-ai/memory'
+import { readFile } from 'fs/promises'
+import { existsSync } from 'fs'
 
 import { decrypt } from './secret'
 import db from '../config/db'
@@ -38,6 +40,7 @@ export default function createLoadAgent(mainAgentId?: string) {
     const agent = await agentHandle.first(
       'id',
       'modelId',
+      'name',
       'enabled',
       'describe',
     )
@@ -75,7 +78,7 @@ export default function createLoadAgent(mainAgentId?: string) {
     let skillLoader: SkillLoader | undefined
     if (skills.length > 0) {
       skillLoader = new SkillLoader({
-        dir: resolve(process.cwd(), AGENT_DIR, agentName, SKILL_DIR),
+        dir: resolve(process.cwd(), AGENT_DIR, agent.name, SKILL_DIR),
         pickSkillNames: skills.map((skill) => skill.skillName),
         async getEnv(skillName) {
           const skill = skills.find((s) => s.skillName === skillName)
@@ -98,14 +101,26 @@ export default function createLoadAgent(mainAgentId?: string) {
     })
 
     const memoryTools = createUseMemoryTools({
-      dir: resolve(process.cwd(), AGENT_DIR, agentName, MEMORY_DIR),
+      dir: resolve(process.cwd(), AGENT_DIR, agent.name, MEMORY_DIR),
     })
+    const indexMemoryFilePath = resolve(
+      process.cwd(),
+      AGENT_DIR,
+      agent.name,
+      MEMORY_DIR,
+      'index.md',
+    )
+    const indexMemory = existsSync(indexMemoryFilePath)
+      ? await readFile(indexMemoryFilePath, 'utf-8')
+      : ''
 
     return {
       model,
       systemPrompt: [
         agent.describe || '',
-        `你拥有长期的**记忆系统**，在需要回忆之前的对话内容或借鉴以前的经验时，可以使用${memoryTools.map((tool) => tool.name).join('、')}等方法`,
+        `**当前时间**: ${new Date().toLocaleString()}`,
+        `你拥有长期的**记忆系统**，在需要回忆之前的对话内容或借鉴以前的经验时，可以使用${memoryTools.map((tool) => tool.name).join('、')}等方法
+**已有记忆大纲**: ${indexMemory || '无'}`,
       ].join('\n'),
       mcps: mpcs.map((mcp) => {
         const factEnv: Record<string, string> = {}
