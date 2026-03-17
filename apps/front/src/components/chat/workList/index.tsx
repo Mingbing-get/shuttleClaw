@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Card, Empty, Select, Spin, Tag } from 'antd'
+import { DollarCircleOutlined } from '@ant-design/icons'
 import { Table, workApi } from '../../../apis'
 import type { QueryWorkParams } from '../../../apis/types'
 
@@ -247,9 +248,7 @@ export default function WorkList({ agentId, onClick }: Props) {
                       fontSize: '14px',
                       fontWeight: 500,
                       marginBottom: '4px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
+                      whiteSpace: 'wrap',
                     }}
                   >
                     {work.prompt}
@@ -268,6 +267,10 @@ export default function WorkList({ agentId, onClick }: Props) {
                   {work.autoRunScope && (
                     <Tag>{getAutoRunScopeText(work.autoRunScope)}</Tag>
                   )}
+                  <Tag>
+                    <DollarCircleOutlined style={{ marginRight: 4 }} />
+                    {`${work.inputTokens} 输入, ${work.outputTokens} 输出`}
+                  </Tag>
                 </div>
               </Card>
             ))}

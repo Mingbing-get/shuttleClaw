@@ -98,6 +98,10 @@ async function initWorkTable() {
       autoRunScope: (table) => table.string('autoRunScope', 20),
       trigger: (table) => table.string('trigger', 20), // user, agent, scheduled
       status: (table) => table.string('status', 20).notNullable(), // running, completed, failed
+      inputTokens: (table) =>
+        table.integer('inputTokens').notNullable().defaultTo(0),
+      outputTokens: (table) =>
+        table.integer('outputTokens').notNullable().defaultTo(0),
       createdAt: (table) => table.dateTime('createdAt').notNullable(),
       endedAt: (table) => table.dateTime('endedAt'),
     },

@@ -2,10 +2,12 @@ import { ShuttleAi } from '@shuttle-ai/type'
 import { OrganizeMemory } from '@shuttle-ai/memory'
 import { ChatOpenAI } from '@langchain/openai'
 import { resolve } from 'path'
+// import '@shuttle-ai/agent/dist/types/type'
 
 import { decrypt } from './secret'
 import db from '../config/db'
 import {
+  WORK_TABLE_NAME,
   MODEL_TABLE_NAME,
   AGENT_TABLE_NAME,
   AGENT_DIR,
@@ -13,10 +15,19 @@ import {
 } from '../config/consts'
 import { Table } from '../types'
 
-export default async function saveMemory(
-  messages: ShuttleAi.Message.Define[],
-  agentId?: string,
-) {
+interface Options {
+  workId: string
+  messages: ShuttleAi.Message.Define[]
+  beforeTokenUseage: ShuttleAi.Cluster.TokenUsage
+  agentId?: string
+}
+
+export default async function saveMemory({
+  workId,
+  messages,
+  beforeTokenUseage,
+  agentId,
+}: Options) {
   const agentHandle = db<Table.Agent>(AGENT_TABLE_NAME)
 
   if (agentId) {
@@ -46,5 +57,14 @@ export default async function saveMemory(
     dir: resolve(process.cwd(), AGENT_DIR, agent.name, MEMORY_DIR),
   })
 
-  await organizeMemory.start(messages)
+  const tokenUseage = await organizeMemory.start(messages)
+  if (!tokenUseage) return
+
+  await db<Table.Work>(WORK_TABLE_NAME)
+    .where('id', '=', workId)
+    .update({
+      inputTokens: tokenUseage.promptTokens + beforeTokenUseage.promptTokens,
+      outputTokens:
+        tokenUseage.completionTokens + beforeTokenUseage.completionTokens,
+    })
 }

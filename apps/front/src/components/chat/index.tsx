@@ -25,7 +25,7 @@ export default function Chat() {
       'none',
     )
   const { works, nextWork, loading, hasMore, forceToWork, setWorks } =
-    useByOneWork({ transporter }, selectedAgentId)
+    useByOneWork({ transporter, initAgent }, selectedAgentId)
 
   return (
     <div

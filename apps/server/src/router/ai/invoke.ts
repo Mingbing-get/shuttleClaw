@@ -55,12 +55,21 @@ const invoke: Middleware = async (ctx) => {
     close()
     agentCluster.stop()
     resolverManager.removeAgentResolver(agentCluster.id)
-    saveMemory(agentCluster.getMessages(), mainAgentId)
+
+    const tokenUsage = agentCluster.getTokenUsage()
+    saveMemory({
+      workId: agentCluster.id,
+      messages: agentCluster.getMessages(),
+      beforeTokenUseage: tokenUsage,
+      agentId: mainAgentId,
+    })
     await db<Table.Work>(WORK_TABLE_NAME)
       .where({ id: agentCluster.id })
       .update({
         status: 'completed',
         endedAt: new Date() as any,
+        inputTokens: tokenUsage.promptTokens,
+        outputTokens: tokenUsage.completionTokens,
       })
   }
 

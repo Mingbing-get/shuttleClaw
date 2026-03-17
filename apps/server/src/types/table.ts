@@ -42,6 +42,8 @@ export namespace Table {
     autoRunScope?: ShuttleAi.Cluster.AutoRunScope
     trigger?: 'user' | 'agent' | 'scheduled'
     status: 'running' | 'completed' | 'failed'
+    inputTokens: number
+    outputTokens: number
     createdAt: string
     endedAt?: string
   }
