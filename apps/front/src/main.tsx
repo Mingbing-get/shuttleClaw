@@ -7,12 +7,14 @@ import {
   MessageFilled,
   SettingFilled,
   RobotFilled,
+  DashboardFilled,
 } from '@ant-design/icons'
 
 import AuthRouter from './components/authRouter'
 import Chat from './components/chat'
 import ModelConfig from './components/modelConfig'
 import AgentConfig from './components/agentConfig'
+import DashBoard from './components/dashboard'
 
 export default function Main() {
   const [collapsed, setCollapsed] = useState(false)
@@ -49,6 +51,14 @@ export default function Main() {
           },
         ],
       },
+      {
+        key: 'dashboard',
+        label: '统计',
+        type: 'group',
+        children: [
+          { key: 'dashboard', label: '看板', icon: <DashboardFilled /> },
+        ],
+      },
     ],
     [],
   )
@@ -62,6 +72,9 @@ export default function Main() {
     }
     if (selectedKeys.includes('agent')) {
       return <AgentConfig />
+    }
+    if (selectedKeys.includes('dashboard')) {
+      return <DashBoard />
     }
     return null
   }, [selectedKeys])

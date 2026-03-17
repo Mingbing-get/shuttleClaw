@@ -14,6 +14,7 @@ import agentRouter from './router/agent'
 import skillRouter from './router/skill'
 import mcpRouter from './router/mcp'
 import workRouter from './router/work'
+import dashboardRouter from './router/dashboard'
 
 import init from './init'
 
@@ -58,6 +59,7 @@ async function main() {
   app.use(mount('/skill', skillRouter.routes()))
   app.use(mount('/mcp', mcpRouter.routes()))
   app.use(mount('/work', workRouter.routes()))
+  app.use(mount('/dashboard', dashboardRouter.routes()))
 
   // 返回public/index.html
   app.use(async (ctx) => {

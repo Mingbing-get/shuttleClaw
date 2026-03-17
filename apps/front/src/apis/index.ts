@@ -4,6 +4,7 @@ export { authApi } from './auth'
 export { mcpApi } from './mcp'
 export { modelApi } from './model'
 export { skillApi } from './skill'
+export { dashboardApi } from './dashboard'
 
 export { API_BASE_URL, API_ENDPOINTS } from './config'
 export { api } from './request'

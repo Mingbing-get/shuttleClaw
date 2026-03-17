@@ -13,19 +13,20 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.1.0",
+    "@ant-design/plots": "^2.6.8",
+    "@shuttle-ai/client": "^0.0.13",
+    "@shuttle-ai/render-react": "^0.0.13",
+    "@shuttle-ai/type": "^0.0.13",
+    "antd": "^6.1.1",
     "classnames": "^2.5.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "antd": "^6.1.1",
-    "@ant-design/icons": "^6.1.0",
-    "@shuttle-ai/render-react": "^0.0.13",
-    "@shuttle-ai/client": "^0.0.13",
-    "@shuttle-ai/type": "^0.0.13"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
     "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.19",
-    "@vitejs/plugin-react": "^4.2.1"
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.3.3"
   }
 }
