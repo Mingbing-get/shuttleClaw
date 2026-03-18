@@ -53,6 +53,7 @@ async function main() {
       }),
     ),
   )
+  app.use(mount('/logo.svg', koaStatic(join(process.cwd(), 'public/logo.svg'))))
 
   const apiRouter = new Router()
   apiRouter.use('/auth', authRouter.routes())
