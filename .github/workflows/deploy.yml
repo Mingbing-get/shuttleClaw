@@ -57,3 +57,5 @@ jobs:
             mkdir -p dist && tar -xzf dist.tar.gz -C dist
             mkdir -p public && tar -xzf public.tar.gz -C public
             rm -rf dist.tar.gz public.tar.gz
+            docker cp . ${{ secrets.DOCKER_CONTAINER_ID }}:/app/.
+            docker restart ${{ secrets.DOCKER_CONTAINER_ID }}
