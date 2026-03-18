@@ -53,6 +53,14 @@ async function main() {
       }),
     ),
   )
+  app.use(
+    mount(
+      '/logo.svg',
+      koaStatic(join(process.cwd(), 'public/logo.svg'), {
+        maxAge: 365 * 24 * 60 * 60 * 1000,
+      }),
+    ),
+  )
 
   const apiRouter = new Router()
   apiRouter.use('/auth', authRouter.routes())
