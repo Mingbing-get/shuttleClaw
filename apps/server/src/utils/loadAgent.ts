@@ -6,6 +6,7 @@ import { SkillLoader } from '@shuttle-ai/skill'
 import { createUseMemoryTools } from '@shuttle-ai/memory'
 import { readFile } from 'fs/promises'
 import { existsSync } from 'fs'
+import 'dotenv/config'
 
 import { decrypt } from './secret'
 import db from '../config/db'
@@ -80,6 +81,11 @@ export default function createLoadAgent(mainAgentId?: string) {
       skillLoader = new SkillLoader({
         dir: resolve(process.cwd(), AGENT_DIR, agent.name, SKILL_DIR),
         pickSkillNames: skills.map((skill) => skill.skillName),
+        runInDocker: {
+          sharedVolumeName:
+            process.env.SHARED_VOLUME_NAME || 'shared_shuttle_claw_data',
+          workDir: process.env.WORK_DIR || '/app',
+        },
         async getEnv(skillName) {
           const skill = skills.find((s) => s.skillName === skillName)
           const factEnv: Record<string, string> = {}

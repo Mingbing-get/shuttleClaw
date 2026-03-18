@@ -15,9 +15,9 @@
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "@ant-design/plots": "^2.6.8",
-    "@shuttle-ai/client": "^0.0.14",
-    "@shuttle-ai/render-react": "^0.0.14",
-    "@shuttle-ai/type": "^0.0.14",
+    "@shuttle-ai/client": "^0.0.15",
+    "@shuttle-ai/render-react": "^0.0.15",
+    "@shuttle-ai/type": "^0.0.15",
     "antd": "^6.1.1",
     "classnames": "^2.5.1",
     "react": "^18.2.0",

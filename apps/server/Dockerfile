@@ -1,6 +1,6 @@
 FROM node:22-alpine
 
-WORKDIR /app
+WORKDIR ${WORK_DIR:-/app}
 
 COPY package*.json ./
 RUN npm install -g pnpm@8.15.4

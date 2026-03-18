@@ -49,8 +49,13 @@ services:
       JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_change_this}
       VAR_SECRET: ${VAR_SECRET:-your_var_secret_change_this}
       PORT: 3010
+      SHARED_VOLUME_NAME: ${SHARED_VOLUME_NAME:-shared_shuttle_claw_data}
+      WORK_DIR: ${WORK_DIR:-/app}
     ports:
       - '3010:3010'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${SHARED_VOLUME_NAME:-shared_shuttle_claw_data}:${WORK_DIR:-/app}
     networks:
       - shuttle-network
 
@@ -69,6 +74,8 @@ services:
 
 volumes:
   mysql_data:
+  shared_shuttle_claw_data:
+    name: ${SHARED_VOLUME_NAME:-shared_shuttle_claw_data}
 
 networks:
   shuttle-network:
