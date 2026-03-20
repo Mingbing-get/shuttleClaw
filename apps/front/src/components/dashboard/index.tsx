@@ -126,6 +126,11 @@ export default function DashBoard() {
             },
           }}
           height={320}
+          scale={{
+            tokens: {
+              alias: 'Token数量',
+            },
+          }}
           xAxis={{
             title: {
               text: '日期',
@@ -138,14 +143,6 @@ export default function DashBoard() {
           }}
           legend={{
             position: 'top',
-          }}
-          tooltip={{
-            formatter: (datum: any) => {
-              return {
-                name: datum.agent,
-                value: `${datum.tokens.toLocaleString()} tokens`,
-              }
-            },
           }}
         />
       </Card>

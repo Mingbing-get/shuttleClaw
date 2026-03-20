@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { Middleware } from '@koa/router'
 import { ShuttleAi } from '@shuttle-ai/type'
-import { AgentCluster, readableHook } from '@shuttle-ai/agent'
+import { AgentCluster, StreamReadableHook } from '@shuttle-ai/agent'
 
 import snowFlake from '../../config/snowFlake'
 import resolverManager from './utils/resolverManager'
@@ -25,14 +25,18 @@ const invoke: Middleware = async (ctx) => {
   ctx.set('Connection', 'keep-alive')
   ctx.status = 200
 
-  const { stream, hooks, send, close, resolveConfirmTool, resolveAgentStart } =
-    readableHook(createLoadAgent(mainAgentId))
+  const streamReadableHook = new StreamReadableHook({
+    getAgentParamsFromServer: createLoadAgent(mainAgentId),
+  })
 
   const agentCluster = new AgentCluster({
     id: snowFlake.next(),
-    hooks: hooks,
+    hooks: streamReadableHook.hooks,
     autoRunScope,
     messageCollector: new MessageCollector(),
+    runnableOptions: {
+      recursionLimit: 1000,
+    },
   })
 
   await db<Table.Work>(WORK_TABLE_NAME).insert({
@@ -46,13 +50,18 @@ const invoke: Middleware = async (ctx) => {
   })
 
   resolverManager.addAgentResolver(agentCluster.id, {
-    resolveConfirmTool,
-    resolveAgentStart,
+    resolveConfirmTool: (id, value) =>
+      streamReadableHook.resolveConfirmTool(id, value),
+    resolveAgentStart: (id, value) =>
+      streamReadableHook.resolveAgentStart(id, value),
   })
 
   async function closeAll() {
-    send({ type: 'endWork', data: { workId: agentCluster.id } })
-    close()
+    streamReadableHook.send({
+      type: 'endWork',
+      data: { workId: agentCluster.id },
+    })
+    streamReadableHook.close()
     agentCluster.stop()
     resolverManager.removeAgentResolver(agentCluster.id)
 
@@ -76,9 +85,12 @@ const invoke: Middleware = async (ctx) => {
   ctx.req.on('close', closeAll)
 
   // 由于是流式响应，不返回常规的响应体
-  ctx.body = stream
+  ctx.body = streamReadableHook.createStream()
 
-  send({ type: 'startWork', data: { workId: agentCluster.id } })
+  streamReadableHook.send({
+    type: 'startWork',
+    data: { workId: agentCluster.id },
+  })
   agentCluster.invoke(prompt).then(closeAll)
 }
 

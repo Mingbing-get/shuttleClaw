@@ -25,8 +25,6 @@ export default function createLoadAgent(mainAgentId?: string) {
   async function loadAgent(
     name: string,
   ): Promise<ShuttleAi.Cluster.AgentStartReturn> {
-    const agentName = name.split('_').slice(0, -1).join('_')
-
     const agentHandle = db<Table.Agent>(AGENT_TABLE_NAME)
     if (name === AgentCluster.MAIN_AGENT_NAME) {
       if (mainAgentId) {
@@ -35,7 +33,7 @@ export default function createLoadAgent(mainAgentId?: string) {
         agentHandle.where('parentId', '=', null)
       }
     } else {
-      agentHandle.where('name', '=', agentName)
+      agentHandle.where('name', '=', name)
     }
 
     const agent = await agentHandle.first(
